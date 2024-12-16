@@ -1,0 +1,35 @@
+static abstract class for input,
+	for every command a seperate static class override. abstract virtual methods.
+		for every sub_command seperate static class override
+a struct that each class returns as an output.
+
+the same for handling out put.	
+struct that each class recieve as an input.
+
+a class for initializing restaurants and restrictions.
+
+// a friend function for building restriction tree for every user.
+	// maybe not neccessary.
+
+a class for restaurants.
+
+a class for reistrictions.	
+
+a class for every user.
+
+an interface class to connect them all.	( UTaste )
+
+a class for handling errors.
+
+************************** STEPS TO EMPLEMENT ***************************
+int main ()
+{
+	interface ut_taste;
+	initialize init(args, ut_taste);
+	ut_taste.begin();
+}
+	1) implement interface class:
+		restaurants, users, restrictions.
+	2) implement user class.	
+	3) implement input class.--> sign in, log in.
+	4) implement output class.--> sign in, log in.	
