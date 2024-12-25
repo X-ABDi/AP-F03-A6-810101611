@@ -1,2 +1,2 @@
-#include "app.hpp"
-#include "init.hpp"
+#include "global.hpp"
+#include "interface.hpp"

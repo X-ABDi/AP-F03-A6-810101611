@@ -2,6 +2,7 @@
 #include "resturan.hpp"
 #include "user.hpp"
 #include "restrict.hpp"
+#include "error.hpp"
 
 class software
 {
@@ -10,5 +11,9 @@ class software
     restrict restricts;
     user* current_user;
     public:
-
+    software();
+    ~software();
+    void resturan_init (std::vector<std::string> rest_prop);
+    void restrict_init (std::vector<std::string> rest_prop);
+    friend class process;
 };
