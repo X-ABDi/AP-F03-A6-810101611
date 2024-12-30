@@ -161,22 +161,48 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
     if (command_entered[1] == sub_command_post::LOGOUT)
         return;
     else if (command_entered[1] == sub_command_post::SIGNUP)
-    {
         parse_post_signup(command_entered, ss);
-    }
     else if (command_entered[1] == sub_command_post::LOGIN)
-    {
         parse_post_login(command_entered, ss);
-    }
     else if (command_entered[1] == sub_command_post::RESERVE)
-    {
         parse_post_reserve(command_entered, ss);
-    }
+}
+
+void parse_delete_reserve(std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    std::string input;
+    ss >> input;
+    if (input != sub_command_delete::RESTAURANT_NAME)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input; 
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);    
+    command_entered.push_back(input);       
+    ss >> input;
+    if (input != sub_command_delete::RESERVE_ID)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    if (is_not_int(input))
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);    
 }
 
 void process::parse_sub_delete(std::vector<std::string> &command_entered, std::stringstream &ss)
 {
-
+    std::string input;
+    ss >> input;
+    if (input != sub_command_delete::RESERVE)
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);    
+    ss >> input;
+    if (input != "?")
+        throw errors(error_message::BAD_REQUEST);
+    if (command_entered[1] == sub_command_delete::RESERVE)
+        parse_delete_reserve(command_entered, ss);      
 }
 
 void process::parse_sub_command(std::vector<std::string> &command_entered, std::stringstream &ss)
