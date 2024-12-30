@@ -36,7 +36,7 @@ std::string interface::run ()
 
 void interface::init (char *argv[])
 {
-    restrict_init(argv[2]);
+    district_init(argv[2]);
     restaurant_init(argv[1]);
     run();
 }
@@ -46,7 +46,7 @@ void interface::restaurant_init (char *resturan_file)
     general_methods.resturan_init(resturan_file);
 }
 
-void interface::restrict_init (char *restrict_file)
+void interface::district_init (char *restrict_file)
 {
-    general_methods.restrict_init(restrict_file);
+    general_methods.district_init(restrict_file);
 }

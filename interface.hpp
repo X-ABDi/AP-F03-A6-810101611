@@ -15,5 +15,5 @@ class interface
         void init (char *argv[]);
         std::string run ();
         void restaurant_init(char *resturan_file);
-        void restrict_init(char *restrict_file);
+        void district_init(char *restrict_file);
 };

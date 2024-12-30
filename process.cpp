@@ -324,7 +324,7 @@ void process::resturan_init (char *resturan_file)
     }
 }
 
-void process::restrict_init (char *restrict_file)
+void process::district_init (char *restrict_file)
 {
     std::ifstream properties(restrict_file);
     if (!properties.is_open())
@@ -341,7 +341,7 @@ void process::restrict_init (char *restrict_file)
         neighbors = parse_neighbor(rest_prop[1]);
         rest_prop.erase(rest_prop.begin()+1);
         rest_prop.insert(rest_prop.end(), neighbors.begin(), neighbors.end());
-        UTaste.restrict_init (rest_prop);
+        UTaste.district_init (rest_prop);
     }
 }
 

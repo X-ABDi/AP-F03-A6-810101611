@@ -10,7 +10,7 @@ struct table{
 class resturan{
     std::string name;
     std::map<std::string, int> menu;
-    std::string restrict;
+    std::string district;
     std::vector<rest_reserve*> reserves;
     std::pair<int, int> working_time;
     std::vector<table*> tables;
@@ -21,4 +21,5 @@ class resturan{
     void set_tables (std::string);
 
     friend class software;
+    friend class district;
 };

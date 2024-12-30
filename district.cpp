@@ -7,7 +7,10 @@ district::district()
 
 district::~district()
 {
-    // vectors in map
+    for (auto i : district_neighbors)
+        delete i.second;
+    for (auto i : district_resturans)
+        delete i.second;    
 }
 
 void district::set_neighbors (std::vector<std::string> properties)
@@ -23,17 +26,17 @@ void district::set_neighbors (std::vector<std::string> properties)
     }
 }
 
-void district::set_resturans (std::string disstrict_name, std::string resturan_name)
+void district::set_resturans (std::string district_name, resturan *new_resturan)
 {
-    if(district_resturans.find(disstrict_name) != district_resturans.end())
+    if(district_resturans.find(district_name) != district_resturans.end())
     {
-        district_resturans[disstrict_name]->push_back(resturan_name);
+        district_resturans[district_name]->push_back(new_resturan);
     }
     else
     {
-        std::vector<std::string> *new_vector = new std::vector<std::string>;
-        district_resturans[disstrict_name] = new_vector;
-        district_resturans[disstrict_name]->push_back(resturan_name);
+        std::vector<resturan*> *new_vector = new std::vector<resturan*>;
+        district_resturans[district_name] = new_vector;
+        district_resturans[district_name]->push_back(new_resturan);
     }
 }
 
@@ -72,4 +75,77 @@ std::string district::get_all_districts()
         respond += "\n";
     }
     return respond;
+}
+
+std::string district::get_resturans(std::string user_district, std::string food_name)
+{
+    std::string respond{""};
+    std::map<std::string, std::vector<std::string>*>::iterator dis_neigh_it;
+    std::map<std::string, bool> checked;
+    for (auto i : district_neighbors)
+        checked[i.first] = false;
+
+    dis_neigh_it = district_neighbors.find(user_district);
+    std::queue<std::pair<std::string,std::vector<std::string>*>> my_q;
+    my_q.push((*dis_neigh_it));
+    checked[dis_neigh_it->first] = true;
+    for (auto i : (*dis_neigh_it->second))
+    {
+        my_q.push((*district_neighbors.find(i)));
+        checked[district_neighbors.find(i)->first] = true;
+    }
+    split_resturan_request(food_name, my_q, checked);
+    return respond;
+}
+
+std::string district::split_resturan_request(std::string food_name, std::queue<std::pair<std::string,std::vector<std::string>*>> &my_q,
+                                                std::map<std::string, bool> &checked)
+{
+    std::pair<std::string, std::vector<std::string>*> dis_pair;
+    std::map<std::string, std::vector<std::string>*>::iterator dis_neigh_it;
+    std::string respond;
+    while (!my_q.empty())
+    {
+        dis_pair = my_q.front();
+        my_q.pop();
+        if (food_name == "")
+            get_resturans_by_food(respond, dis_pair, food_name);
+        else
+            get_all_resturans(respond, dis_pair);    
+        for (auto j : (*dis_pair.second))
+        {
+            if (!checked[j])
+            {
+                dis_neigh_it = district_neighbors.find(j);
+                my_q.push((*dis_neigh_it));
+                checked[dis_neigh_it->first] = true;
+            }
+        }
+    }
+
+}
+
+std::string district::get_resturans_by_food(std::string &respond, std::pair<std::string, std::vector<std::string>*> dis_pair, std::string food_name)
+{
+    for (auto i : (*district_resturans[dis_pair.first]))
+        {
+            if (i->menu.count(food_name))
+            {
+                respond += i->name;
+                respond += " (";
+                respond += i->district;
+                respond += ")\n";
+            }
+        }
+}
+
+std::string district::get_all_resturans(std::string &respond, std::pair<std::string, std::vector<std::string>*> dis_pair)
+{
+        for (auto i : (*district_resturans[dis_pair.first]))
+        {
+            respond += i->name;
+            respond += " (";
+            respond += i->district;
+            respond += ")\n";
+        }
 }

@@ -15,7 +15,7 @@ class process
     public:
     process();
     void resturan_init (char *);
-    void restrict_init (char *);
+    void district_init (char *);
     void begin(std::vector<std::string> &command_entered);
     protected:
     software UTaste;
@@ -42,10 +42,4 @@ class process
     virtual std::string pro_put (std::vector<std::string> &command_entered);
     virtual std::string pro_post (std::vector<std::string> &command_entered);
     virtual std::string pro_delete (std::vector<std::string> &command_entered);
-};
-
-class Delete : protected process
-{
-    public:
-        std::string pro_delete (std::vector<std::string> &command_entered);
 };
