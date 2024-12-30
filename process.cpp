@@ -45,14 +45,88 @@ std::vector<std::string> process::parse_neighbor (std::string line)
     return result;
 } 
 
+void parse_get_resturants(std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    std::string input;
+    ss >> input;
+    if (input != sub_command_get::FOOD_NAME)
+        return;
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    command_entered.push_back(input);        
+}
+
+void parse_get_restdetail(std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    std::string input;
+    ss >> input;    
+    if (input != sub_command_get::RESTAURANT_NAME)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    command_entered.push_back(input);        
+}
+
+void parse_get_district(std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    std::string input;
+    ss >> input;
+    if (input != sub_command_get::DISTRICT)
+        return;
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    command_entered.push_back(input);    
+}
+
 void process::parse_sub_get(std::vector<std::string> &command_entered, std::stringstream &ss)
 {
+    std::string input;
+    ss >> input;
+    if (find(sub_comma_get.begin(), sub_comma_get.end(), input) == sub_comma_get.end())
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);
+    ss >> input;
+    if (input != "?")
+        throw errors(error_message::BAD_REQUEST);
+    if (command_entered[1] == sub_command_get::RESTAURANTS)
+        parse_get_resturants(command_entered, ss);
+    else if (command_entered[1] == sub_command_get::RESTAURANT_DETAIL)
+        parse_get_restdetail(command_entered, ss);
+    else if (command_entered[1] == sub_command_get::DISTRICTS)
+        parse_get_district(command_entered, ss);                
+}
 
+void parse_put_district(std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    std::string input;
+    ss >> input;
+    if (input != sub_command_put::DISTRICT)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    command_entered.push_back(input);        
 }
 
 void process::parse_sub_put(std::vector<std::string> &command_entered, std::stringstream &ss)
 {
-
+    std::string input;
+    ss >> input;
+    if (find(sub_comma_put.begin(), sub_comma_put.end(), input) == sub_comma_put.end())
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);    
+    ss >> input;
+    if (input != "?")
+        throw errors(error_message::BAD_REQUEST);
+    if (command_entered[1] == sub_command_put::MY_DISTRICT)
+        parse_put_district(command_entered, ss);    
 }
 
 void process::parse_post_signup (std::vector<std::string> &command_entered, std::stringstream &ss)
