@@ -8,6 +8,22 @@ process::process()
 
 std::vector<std::string> commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
 
+bool double_qoute_error (std::string input)
+{
+    if (input == "" || input[0] != '\"' || input[input.length()-1] != '\"')
+        return true;
+    input = input.substr(1, input.length()-2);
+    if (input == "")
+        return true;    
+}
+
+bool is_not_int (std::string input)
+{
+    for (char c : input)
+        if (!isdigit(c))
+            return true;
+    return false;        
+}
 
 std::vector<std::string> process::parse_line (std::string line) 
 {
@@ -46,7 +62,7 @@ void process::parse_post_signup (std::vector<std::string> &command_entered, std:
     if (input != sub_command_post::USERNAME)
         throw errors(error_message::BAD_REQUEST);
     ss >> input;
-    if (input[0] != '\"' || input[input.length()-1] != '\"')
+    if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
@@ -54,7 +70,7 @@ void process::parse_post_signup (std::vector<std::string> &command_entered, std:
     if (input != sub_command_post::PASSWORD)
         throw errors(error_message::BAD_REQUEST);
     ss >> input;
-    if (input[0] != '\"' || input[input.length()-1] != '\"')
+    if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
@@ -67,7 +83,7 @@ void process::parse_post_login (std::vector<std::string> &command_entered, std::
     if (input != sub_command_post::USERNAME)
         throw errors(error_message::BAD_REQUEST);
     ss >> input;
-    if (input[0] != '\"' || input[input.length()-1] != '\"')
+    if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
@@ -75,7 +91,7 @@ void process::parse_post_login (std::vector<std::string> &command_entered, std::
     if (input != sub_command_post::PASSWORD)
         throw errors(error_message::BAD_REQUEST);
     ss >> input;
-    if (input[0] != '\"' || input[input.length()-1] != '\"')
+    if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
@@ -84,7 +100,52 @@ void process::parse_post_login (std::vector<std::string> &command_entered, std::
 void process::parse_post_reserve (std::vector<std::string> &command_entered, std::stringstream &ss)
 {
     std::string input;
-
+    ss >> input;
+    if (input != sub_command_post::RESTAURANT_NAME)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    command_entered.push_back(input);
+    ss >> input;
+    if (input != sub_command_post::TABLE_ID)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    if (is_not_int(input))
+        throw errors(error_message::BAD_REQUEST);  
+    command_entered.push_back(input);
+    ss >> input;
+    if (input != sub_command_post::START_TIME)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    if (is_not_int(input))
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);
+    ss >> input;
+    if (input != sub_command_post::END_TIME)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    if (is_not_int(input))
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);
+    ss >> input;
+    if (input != sub_command_post::FOODS)
+        return;
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    command_entered.push_back(input);                                
 }
 
 void process::parse_sub_post(std::vector<std::string> &command_entered, std::stringstream &ss)
@@ -93,6 +154,7 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
     ss >> input;
     if (find(sub_comma_post.begin(), sub_comma_post.end(), input) == sub_comma_post.end())
         throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);    
     ss >> input;    
     if (input != "?" )
         throw errors(error_message::BAD_REQUEST);

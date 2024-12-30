@@ -27,6 +27,10 @@ namespace sub_command_post{
     const std::string LOGOUT = "logout";
     const std::string RESERVE = "reserve";
     const std::string RESTAURANT_NAME = "restaurant_name";
+    const std::string TABLE_ID = "table_id";
+    const std::string START_TIME = "start_time";
+    const std::string END_TIME = "end_time";
+    const std::string FOODS = "foods";
     const std::string RESERVE_ID = "reserve_id";
 }
 
