@@ -304,7 +304,7 @@ std::vector<std::string> process::parse_command(std::string input)
         throw errors(error_message::BAD_REQUEST);
     command_entered.push_back(input);
     parse_sub_command(command_entered, ss);
-
+    return command_entered;
 }
 
 void process::resturan_init (char *resturan_file)
