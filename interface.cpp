@@ -1,41 +1,47 @@
 #include "interface.hpp"
 
-std::string interface::run ()
+void interface::run ()
 {
-    std::vector<std::string> command_entered;
-    general_methods.begin(command_entered);
-    if (command_entered[0] == main_command::GET)
+    while(true)
     {
-        Get* get_object;
-        process* base_ptr = &general_methods;
-        get_object = dynamic_cast<Get*>(base_ptr);
-        get_object->pro_get(command_entered);
-    }
-    else if (command_entered[0] == main_command::PUT)
-    {
-        Put* put_object;
-        process* base_ptr = &general_methods;
-        put_object = dynamic_cast<Put*>(base_ptr);
-        put_object->pro_put(command_entered);
-    }
-    else if (command_entered[0] == main_command::POST)
-    {
-        Post* post_object;
-        process* base_ptr = &general_methods;
-        post_object = dynamic_cast<Post*>(base_ptr);
-        post_object->pro_post(command_entered);
-    }
-    else if (command_entered[0] == main_command::DELETE)
-    {
-        Delete* delete_object;
-        process* base_ptr = &general_methods;
-        delete_object = dynamic_cast<Delete*>(base_ptr);
-        delete_object->pro_delete(command_entered);
-    }
+        std::string respond;
+        std::vector<std::string> command_entered;
+        general_methods.begin(command_entered);
+        if (command_entered[0] == main_command::GET)
+        {
+            Get* get_object;
+            process* base_ptr = &general_methods;
+            get_object = dynamic_cast<Get*>(base_ptr);
+            respond = get_object->pro_get(command_entered);
+        }
+        else if (command_entered[0] == main_command::PUT)
+        {
+            Put* put_object;
+            process* base_ptr = &general_methods;
+            put_object = dynamic_cast<Put*>(base_ptr);
+            respond = put_object->pro_put(command_entered);
+        }
+        else if (command_entered[0] == main_command::POST)
+        {
+            Post* post_object;
+            process* base_ptr = &general_methods;
+            post_object = dynamic_cast<Post*>(base_ptr);
+            respond = post_object->pro_post(command_entered);
+        }
+        else if (command_entered[0] == main_command::DELETE)
+        {
+            Delete* delete_object;
+            process* base_ptr = &general_methods;
+            delete_object = dynamic_cast<Delete*>(base_ptr);
+            respond = delete_object->pro_delete(command_entered);
+        }
+        output(respond);
+    }    
 }
 
 void interface::init (char *argv[])
 {
+    std::string respond;
     district_init(argv[2]);
     restaurant_init(argv[1]);
     run();

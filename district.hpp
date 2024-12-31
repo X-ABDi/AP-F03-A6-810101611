@@ -12,6 +12,7 @@ class district
         ~district();
         void set_neighbors (std::vector<std::string> properties);
         void set_resturans (std::string district, resturan* new_resturan);
+        bool user_district_check (std::string);
         std::string get_district(std::string district_name);
         std::string get_all_districts();
         std::string district::split_resturan_request(std::string food_name, std::queue<std::pair<std::string,std::vector<std::string>*>> &my_q,

@@ -15,12 +15,20 @@ class software
     public:
     software();
     ~software();
+    bool logged_in ();
+    void set_district (std::string);
+    void delete_reserve (std::vector<std::string> &command_entered);
     std::vector<std::pair<std::string,rest_reserve*>> sort_reserves_by_times(resturan*, std::pair<std::string, table *>);
     std::string resturan_detail_tables(std::string resturan_name);
     std::string get_district(std::string);
     std::string get_all_districts();
     std::string get_resturans(std::string food_name);
     std::string get_resturan_detail(std::string);
+    std::string get_reserves(std::vector<std::string> &command_entered);
+    std::string get_all_reserves();
+    std::string get_resturan_reserves(std::vector<std::string> &command_entered);
+    std::string get_resturan_one_reserve(std::vector<std::string> &command_entered);
+    std::string signup(std::vector<std::string> &command_entered);
     void resturan_init (std::vector<std::string> rest_prop);
     void district_init (std::vector<std::string> rest_prop);
     friend class process;

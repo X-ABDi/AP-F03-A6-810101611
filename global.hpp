@@ -4,6 +4,8 @@
 #include <fstream>
 #include <vector>
 
+#define OK "OK"
+
 namespace error_message{
     const std::string EMPTY = "Empty";
     const std::string NOT_FOUND = "Not Found";
@@ -41,6 +43,8 @@ namespace sub_command_get{
     const std::string FOOD_NAME = "food_name";
     const std::string RESTAURANT_DETAIL = "restaurant_detail";
     const std::string RESTAURANT_NAME = "restaurant_name";
+    const std::string RESERVES = "reserves";
+    const std::string RESERVE_ID = "reserve_id";
 }
 
 namespace sub_command_put{

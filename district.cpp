@@ -13,6 +13,13 @@ district::~district()
         delete i.second;    
 }
 
+bool district::user_district_check (std::string district_name)
+{
+    if (find_if(district_neighbors.begin(), district_neighbors.end(), [district_name](std::pair<std::string, std::vector<std::string>*> a){return a.first == district_name;}) != district_neighbors.end())
+        return true;
+    return false;    
+}
+
 void district::set_neighbors (std::vector<std::string> properties)
 {
     if(district_neighbors.find(properties[0]) == district_neighbors.end())

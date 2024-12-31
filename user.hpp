@@ -5,8 +5,9 @@
 class user{
     std::string username;
     std::string password;
-    std::vector<user_reserve*>* reserves;
+    std::map<std::string, user_reserve*>* reserves;
     std::string district;
+    bool logged_in;
     public:
         user(std::string, std::string);
 

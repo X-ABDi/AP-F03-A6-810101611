@@ -1,6 +1,7 @@
 #include "global.hpp"
 #include "error.hpp"
 #include "input.hpp"
+#include "output.hpp"
 #include "process.hpp"
 #include "put.hpp"
 #include "post.hpp"
@@ -13,7 +14,7 @@ class interface
     process general_methods;
     public:
         void init (char *argv[]);
-        std::string run ();
+        void run ();
         void restaurant_init(char *resturan_file);
         void district_init(char *restrict_file);
 };

@@ -2,14 +2,14 @@
 
 resturan::~resturan()
 {
-    for (auto i : reserves)
-    {
-        delete i;
-    } 
-    for (auto i : tables)
-    {
-        delete i;
-    }
+    // for (auto i : reserves)
+    // {
+    //     delete i;
+    // } 
+    // for (auto i : tables)
+    // {
+    //     delete i;
+    // }
 }
 
 void resturan::set_menu (std::string raw_menu)

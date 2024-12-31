@@ -3,5 +3,5 @@
 class output
 {
     public:
-    
+        output(std::string);
 };

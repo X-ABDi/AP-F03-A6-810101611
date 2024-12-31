@@ -2,12 +2,17 @@
 
 std::string Get::pro_get (std::vector<std::string> &command_entered)
 {
+    if (!UTaste.logged_in())
+        throw errors(error_message::PERMISSION_DENIED);
     if (command_entered[1] == sub_command_get::DISTRICTS)
         pro_get_districts(command_entered);
     else if (command_entered[1] == sub_command_get::RESTAURANTS)
         pro_get_resturans(command_entered);
     else if (command_entered[1] == sub_command_get::RESTAURANT_DETAIL)
-        pro_get_restdetail(command_entered);    
+        pro_get_restdetail(command_entered); 
+    else if (command_entered[1] == sub_command_get::RESERVES)
+        pro_get_reserves(command_entered);
+
 }
 
 std::string Get::pro_get_districts(std::vector<std::string> &command_entered)
@@ -33,5 +38,11 @@ std::string Get::pro_get_resturans(std::vector<std::string> &command_entered)
 std::string Get::pro_get_restdetail(std::vector<std::string> &command_entered)
 {
     std::string respond;
-    UTaste.get_resturan_detail(command_entered[2]);
+    respond = UTaste.get_resturan_detail(command_entered[2]);
+}
+
+std::string Get::pro_get_reserves(std::vector<std::string> &command_entered)
+{
+    std::string respond;
+    respond = UTaste.get_reserves(command_entered);
 }

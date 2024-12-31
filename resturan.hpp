@@ -15,6 +15,7 @@ class resturan{
     std::map<std::string,rest_reserve*> reserves;
     std::pair<std::string, std::string> working_time;
     std::map<std::string,table*> tables;
+    std::string last_reserve_id;
 
     public:
     ~resturan();

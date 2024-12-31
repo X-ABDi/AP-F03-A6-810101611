@@ -1,14 +1,6 @@
 #include "global.hpp"
 #include "software.hpp"
-#include "output.hpp"
 
-// enum main_commads
-// {
-//     GET = 1,
-//     PUT = 2,
-//     POST = 3,
-//     DELETE = 4
-// };
 
 class process
 {
@@ -19,7 +11,6 @@ class process
     void begin(std::vector<std::string> &command_entered);
     protected:
     software UTaste;
-    output response;
     private:
     static std::vector<std::string> main_commands;
     static std::vector<std::string> sub_comma_get;
