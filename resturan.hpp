@@ -3,17 +3,18 @@
 #include "reserve.hpp"
 
 struct table{
-    int table_id;
+    std::string table_id;
+    std::vector<std::string> reseve_ids;
     bool reserved;
 };
 
 class resturan{
     std::string name;
-    std::map<std::string, int> menu;
+    std::map<std::string, std::string> menu;
     std::string district;
-    std::vector<rest_reserve*> reserves;
-    std::pair<int, int> working_time;
-    std::vector<table*> tables;
+    std::map<std::string,rest_reserve*> reserves;
+    std::pair<std::string, std::string> working_time;
+    std::map<std::string,table*> tables;
 
     public:
     ~resturan();

@@ -23,6 +23,15 @@ std::string Get::pro_get_districts(std::vector<std::string> &command_entered)
 std::string Get::pro_get_resturans(std::vector<std::string> &command_entered)
 {
     std::string respond;
-    respond = UTaste.get_resturans(command_entered[2]); 
+    if (command_entered.size() == 3)
+        respond = UTaste.get_resturans(command_entered[2]); 
+    else if (command_entered.size() == 2)
+        respond = UTaste.get_resturans("");    
     return respond;       
+}
+
+std::string Get::pro_get_restdetail(std::vector<std::string> &command_entered)
+{
+    std::string respond;
+    UTaste.get_resturan_detail(command_entered[2]);
 }

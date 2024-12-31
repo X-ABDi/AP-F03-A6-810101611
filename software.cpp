@@ -60,3 +60,49 @@ std::string software::get_resturans(std::string food_name)
         throw errors(error_message::EMPTY);
     return respond;    
 }
+
+std::vector<std::pair<std::string,rest_reserve*>> software::sort_reserves_by_times(resturan* my_resturan, std::pair<std::string, table *> i)
+{
+    std::vector<std::pair<std::string,rest_reserve*>> reserves;
+
+    for (auto j : i.second->reseve_ids)
+    {
+        reserves.push_back((*my_resturan->reserves.find(j)));
+    }
+    sort(reserves.begin(), reserves.end(), [](std::pair<std::string, rest_reserve*> a, std::pair<std::string, rest_reserve*> b){return a.second->time_interval.first < b.second->time_interval.first;});
+    return reserves;
+}
+
+std::string software::resturan_detail_tables(std::string resturan_name)
+{
+    std::string respond;
+    std::vector<std::pair<std::string,rest_reserve*>> sorted_reserves;
+    for (std::pair<std::string, table *> i : (*all_resturans)[resturan_name]->tables)
+    {
+        respond += i.first+": ";
+        sorted_reserves = sort_reserves_by_times((*all_resturans)[resturan_name], i);
+        for (auto j : sorted_reserves)
+        {
+            respond += "("+j.second->time_interval.first+'-'+j.second->time_interval.second+"), ";   
+        }
+        respond = respond.substr(0, respond.length()-2);
+        respond += "\n";
+    }
+}
+
+std::string software::get_resturan_detail(std::string resturan_name)
+{
+    if ((*all_resturans).count(resturan_name) == 0)
+        throw errors(error_message::NOT_FOUND);
+    std::string respond = "";
+    respond += "Name: "+(*all_resturans)[resturan_name]->name+"\n";
+    respond += "District: "+(*all_resturans)[resturan_name]->district+"\n";
+    respond += "Time: "+(*all_resturans)[resturan_name]->working_time.first+'-'+(*all_resturans)[resturan_name]->working_time.second+"\n";
+    respond += "Menu: ";
+    for (auto i : (*all_resturans)[resturan_name]->menu)
+        respond += i.first+"("+i.second+"), ";
+    respond = respond.substr(0, respond.length()-2);
+    respond += "\n";
+    respond += resturan_detail_tables(resturan_name);
+    return respond;
+}

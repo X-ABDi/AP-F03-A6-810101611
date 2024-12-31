@@ -2,10 +2,10 @@
 
 struct  reserves
 {
-    int table_id;
-    int reserve_id;
-    std::pair<int, int> time_interval;
-    std::vector<std::pair<std::string, int>> foods;
+    std::string table_id;
+    std::string reserve_id;
+    std::pair<std::string, std::string> time_interval;
+    std::vector<std::pair<std::string, std::string>> foods;
 };
 
 struct rest_reserve : reserves
