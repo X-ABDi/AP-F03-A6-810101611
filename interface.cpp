@@ -2,10 +2,11 @@
 
 void interface::run ()
 {
+    std::string respond;
+    std::vector<std::string> command_entered;
+    output result;
     while(true)
     {
-        std::string respond;
-        std::vector<std::string> command_entered;
         general_methods.begin(command_entered);
         if (command_entered[0] == main_command::GET)
         {
@@ -35,7 +36,8 @@ void interface::run ()
             delete_object = dynamic_cast<Delete*>(base_ptr);
             respond = delete_object->pro_delete(command_entered);
         }
-        output(respond);
+        result.set_respond(respond);
+        result.monitor();
     }    
 }
 

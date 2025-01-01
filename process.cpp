@@ -2,11 +2,25 @@
 #include <regex>
 #include "process.hpp"
 
+std::vector<std::string> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
+std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES};
+std::vector<std::string> process::sub_comma_put = {sub_command_put::MY_DISTRICT};
+std::vector<std::string> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP};
+std::vector<std::string> process::sub_comma_delete = {sub_command_delete::RESERVE};
+
 process::process()
 {
+    // main_commands
+    // sub_comma_get
+    // sub_comma_put
+    // sub_comma_post
+    // sub_comma_delete
 }
 
-std::vector<std::string> commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
+std::string process::pro_get (std::vector<std::string> &command_entered){}
+std::string process::pro_put (std::vector<std::string> &command_entered){}
+std::string process::pro_post (std::vector<std::string> &command_entered){}
+std::string process::pro_delete (std::vector<std::string> &command_entered){} 
 
 bool double_qoute_error (std::string input)
 {
@@ -14,7 +28,8 @@ bool double_qoute_error (std::string input)
         return true;
     input = input.substr(1, input.length()-2);
     if (input == "")
-        return true;    
+        return true;  
+    return false;      
 }
 
 bool is_not_int (std::string input)

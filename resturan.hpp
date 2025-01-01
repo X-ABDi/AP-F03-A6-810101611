@@ -1,3 +1,6 @@
+#ifndef __RESTURAN__
+#define __RESTURAN__
+
 #include "global.hpp"
 #include <regex>
 #include "reserve.hpp"
@@ -25,3 +28,5 @@ class resturan{
     friend class software;
     friend class district;
 };
+
+#endif

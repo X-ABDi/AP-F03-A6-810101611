@@ -129,30 +129,30 @@ std::string district::split_resturan_request(std::string food_name, std::queue<s
             }
         }
     }
-
+    return respond;
 }
 
-std::string district::get_resturans_by_food(std::string &respond, std::pair<std::string, std::vector<std::string>*> dis_pair, std::string food_name)
+void district::get_resturans_by_food(std::string &respond, std::pair<std::string, std::vector<std::string>*> dis_pair, std::string food_name)
 {
     for (auto i : (*district_resturans[dis_pair.first]))
-        {
-            if (i->menu.count(food_name))
-            {
-                respond += i->name;
-                respond += " (";
-                respond += i->district;
-                respond += ")\n";
-            }
-        }
-}
-
-std::string district::get_all_resturans(std::string &respond, std::pair<std::string, std::vector<std::string>*> dis_pair)
-{
-        for (auto i : (*district_resturans[dis_pair.first]))
+    {
+        if (i->menu.count(food_name))
         {
             respond += i->name;
             respond += " (";
             respond += i->district;
             respond += ")\n";
         }
+    }
+}
+
+void district::get_all_resturans(std::string &respond, std::pair<std::string, std::vector<std::string>*> dis_pair)
+{
+    for (auto i : (*district_resturans[dis_pair.first]))
+    {
+        respond += i->name;
+        respond += " (";
+        respond += i->district;
+        respond += ")\n";
+    }
 }

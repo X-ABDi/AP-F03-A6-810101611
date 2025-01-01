@@ -1,3 +1,6 @@
+#ifndef __GLOBAL__
+#define __GLOBAL__
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -57,3 +60,5 @@ namespace sub_command_delete{
     const std::string RESTAURANT_NAME = "restaurant_name";
     const std::string RESERVE_ID = "reserve_id";
 }
+
+#endif

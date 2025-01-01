@@ -8,21 +8,25 @@ std::string Post::pro_post_signup(std::vector<std::string> &command_entered)
 
 std::string Post::pro_post_login(std::vector<std::string> &command_entered)
 {
-    
+    UTaste.login(command_entered);
+    return OK;
 }
 
 std::string Post::pro_post_logout(std::vector<std::string> &command_entered)
 {
     if (!UTaste.logged_in())
         throw errors(error_message::PERMISSION_DENIED);
-
+    UTaste.logout();
+    return OK;
 }
 
 std::string Post::pro_post_reserve(std::vector<std::string> &command_entered)
 {
+    std::string respond;
     if (!UTaste.logged_in())
         throw errors(error_message::PERMISSION_DENIED);
-
+    respond = UTaste.reserve(command_entered);
+    return respond;
 }
 
 std::string Post::pro_post (std::vector<std::string> &command_entered)

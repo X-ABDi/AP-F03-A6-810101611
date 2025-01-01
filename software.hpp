@@ -1,3 +1,6 @@
+#ifndef __SOFTWARE__
+#define __SOFTWARE__
+
 #include "global.hpp"
 #include <algorithm>
 #include "resturan.hpp"
@@ -28,8 +31,15 @@ class software
     std::string get_all_reserves();
     std::string get_resturan_reserves(std::vector<std::string> &command_entered);
     std::string get_resturan_one_reserve(std::vector<std::string> &command_entered);
-    std::string signup(std::vector<std::string> &command_entered);
+    void signup(std::vector<std::string> &command_entered);
+    void login(std::vector<std::string> &command_entered);
+    void logout();
+    std::string reserve(std::vector<std::string> &command_entered);
+    std::string set_reserve(std::vector<std::string> &command_entered,std::map<std::string, std::pair<std::string, int>> &foods, std::map<std::string, resturan*>::iterator &map_it);
     void resturan_init (std::vector<std::string> rest_prop);
     void district_init (std::vector<std::string> rest_prop);
+
     friend class process;
 };
+
+#endif

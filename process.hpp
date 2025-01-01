@@ -1,6 +1,8 @@
+#ifndef __PROCESS__
+#define __PROCESS__
+
 #include "global.hpp"
 #include "software.hpp"
-
 
 class process
 {
@@ -27,10 +29,11 @@ class process
     static void parse_post_signup (std::vector<std::string> &command_entered, std::stringstream &ss);
     static void parse_post_login (std::vector<std::string> &command_entered, std::stringstream &ss);
     static void parse_post_reserve (std::vector<std::string> &command_entered, std::stringstream &ss);
-
     static void parse_sub_delete(std::vector<std::string> &command_entered, std::stringstream &ss);
     virtual std::string pro_get (std::vector<std::string> &command_entered);
     virtual std::string pro_put (std::vector<std::string> &command_entered);
     virtual std::string pro_post (std::vector<std::string> &command_entered);
     virtual std::string pro_delete (std::vector<std::string> &command_entered);
 };
+
+#endif

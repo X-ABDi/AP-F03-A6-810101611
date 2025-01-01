@@ -1,3 +1,6 @@
+#ifndef __GET__
+#define __GET__
+
 #include "global.hpp"
 #include "process.hpp"
 
@@ -10,3 +13,5 @@ class Get : protected process
         std::string pro_get_restdetail(std::vector<std::string> &command_entered);
         std::string pro_get_reserves(std::vector<std::string> &command_entered);
 };
+
+#endif

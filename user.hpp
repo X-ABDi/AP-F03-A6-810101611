@@ -1,6 +1,8 @@
+#ifndef __USER__
+#define __USER__
+
 #include "global.hpp"
 #include "reserve.hpp"
-
 
 class user{
     std::string username;
@@ -10,6 +12,8 @@ class user{
     bool logged_in;
     public:
         user(std::string, std::string);
-
+        ~user();
     friend class software;    
 };
+
+#endif

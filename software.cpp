@@ -114,6 +114,7 @@ std::string software::resturan_detail_tables(std::string resturan_name)
         respond = respond.substr(0, respond.length()-2);
         respond += "\n";
     }
+    return respond;
 }
 
 std::string software::get_resturan_detail(std::string resturan_name)
@@ -146,7 +147,7 @@ std::string software::get_all_reserves()
         {
             for (auto j : i.second->foods)
             {
-                respond += std::get<0>(j)+"("+std::to_string(std::get<2>(j))+") ";
+                respond += j.first+"("+j.second.first+") ";
             }
         }
         respond += "\n";
@@ -157,7 +158,7 @@ std::string software::get_all_reserves()
 std::string software::get_resturan_reserves(std::vector<std::string> &command_entered)
 {
     std::string respond="";
-    if (find_if((*current_user->reserves).begin(), (*current_user->reserves).end(), [command_entered](std::pair<std::string, user_reserve*>* a){return (*a).second->resturan_name == command_entered[2];}) == (*current_user->reserves).end())
+    if (find_if((*current_user->reserves).begin(), (*current_user->reserves).end(), [command_entered](std::pair<std::string, user_reserve*> a){return a.second->resturan_name == command_entered[2];}) == (*current_user->reserves).end())
         throw errors(error_message::EMPTY);
     for (auto i : (*current_user->reserves))
     {
@@ -171,7 +172,7 @@ std::string software::get_resturan_reserves(std::vector<std::string> &command_en
             {
                 for (auto j : i.second->foods)
                 {
-                    respond += std::get<0>(j)+"("+std::to_string(std::get<2>(j))+") ";
+                    respond += j.first+"("+j.second.first+") ";
                 }
             }
             respond += "\n";
@@ -197,7 +198,7 @@ std::string software::get_resturan_one_reserve(std::vector<std::string> &command
     if (!(*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->foods.empty())
     {
         for (auto i : (*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->foods)
-            respond += std::get<0>(i)+"("+std::to_string(std::get<2>(i))+") ";
+            respond += i.first+"("+i.second.first+") ";
     }   
     respond += "\n";        
     return respond;
@@ -217,7 +218,7 @@ std::string software::get_reserves(std::vector<std::string> &command_entered)
     return respond;           
 }
 
-std::string software::signup(std::vector<std::string> &command_entered)
+void software::signup(std::vector<std::string> &command_entered)
 {
     std::map<std::string, user*>::iterator map_it;
     map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.first == command_entered[2];});
@@ -237,5 +238,139 @@ std::string software::signup(std::vector<std::string> &command_entered)
         user* new_user = new user(command_entered[2], command_entered[3]);
         (*all_users)[command_entered[2]] = new_user;
     }
-    return OK;
+}
+
+void software::login(std::vector<std::string> &command_entered)
+{
+    if (find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.second->username==command_entered[2];}) == (*all_users).end())
+        throw errors(error_message::NOT_FOUND);
+    std::map<std::string, user*>::iterator map_it;
+    map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.second->username==command_entered[2];});
+    if ((*map_it).second->password != command_entered[3])
+        throw errors(error_message::PERMISSION_DENIED);
+    if (current_user->logged_in == true)
+        throw errors(error_message::PERMISSION_DENIED);
+    current_user = (*map_it).second;
+    current_user->logged_in = true;            
+}
+
+void software::logout()
+{
+    if (current_user->logged_in == false)
+        throw errors(error_message::PERMISSION_DENIED);
+    current_user->logged_in = false;    
+}
+
+std::map<std::string, std::pair<std::string, int>> parse_foods(std::string foods)
+{
+    std::map<std::string, std::pair<std::string, int>> food_vec;
+    std::stringstream ss = std::stringstream();
+    ss << foods;
+    while (ss.good())
+    {
+        getline (ss, foods, ',');
+        if (food_vec.count(foods) == 0)
+            food_vec[foods] = {"", 1};
+        else
+            food_vec[foods].second += 1;    
+    }
+    return food_vec;
+}
+
+std::string calculate_price (std::map<std::string, std::pair<std::string, int>> &foods)
+{
+    int sum=0;
+    for (auto i : foods)
+        sum += std::stoi(i.second.first)*i.second.second;
+    return std::to_string(sum);   
+}
+
+std::string software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<std::string, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
+{
+    rest_reserve* rest_res = new rest_reserve;
+    user_reserve* user_res = new user_reserve;
+    rest_res->table_id = command_entered[3];
+    user_res->table_id = command_entered[3];
+    rest_res->username = current_user->username;
+    user_res->resturan_name = command_entered[2];
+    int res_id = stoi(map_it->second->last_reserve_id);
+    res_id += 1;
+    map_it->second->last_reserve_id = std::to_string(res_id);
+    rest_res->reserve_id = std::to_string(res_id);
+    user_res->reserve_id = std::to_string(res_id);
+    rest_res->time_interval.first = command_entered[4];
+    user_res->time_interval.first = command_entered[4];
+    rest_res->time_interval.second = command_entered[5];
+    user_res->time_interval.second = command_entered[5];
+    if (command_entered.size() == 7)
+    {
+        for (auto i : foods)
+        {
+            user_res->foods[i.first] = {i.second.first, i.second.second};
+            rest_res->foods[i.first] = {i.second.first, i.second.second};
+        }
+    }
+    (*current_user->reserves)[std::to_string(res_id)] = user_res;
+    (*all_resturans)[map_it->first]->reserves[std::to_string(res_id)] = rest_res;
+    std::string respond = "";
+    respond += "Reserve ID: "+std::to_string(res_id)+"\n";
+    respond += "Table "+command_entered[3]+" for "+command_entered[4]+" to "+command_entered[5];
+    respond += " in "+command_entered[2]+"\n";
+    respond += "Price: ";
+    if (command_entered.size() == 7)
+    {
+        std::string price = calculate_price(foods);
+        respond += price+"\n";
+    }
+    else
+        respond += "0\n";
+    return respond;    
+}
+
+std::string software::reserve(std::vector<std::string> &command_entered)
+{
+    std::map<std::string, resturan*>::iterator map_it;
+    std::map<std::string, std::pair<std::string, int>> foods;
+    map_it = find_if((*all_resturans).begin(), (*all_resturans).end(), [command_entered](std::pair<std::string, resturan*> a){return a.first==command_entered[2];});
+    if (map_it == (*all_resturans).end())
+        throw errors(error_message::NOT_FOUND);
+    if (find_if(map_it->second->tables.begin(), map_it->second->tables.end(), [command_entered](std::pair<std::string, table*> a){return a.second->table_id==command_entered[3];}) == map_it->second->tables.end())
+        throw errors(error_message::NOT_FOUND);
+    if (command_entered.size() == 7)
+    {
+        foods = parse_foods(command_entered[6]);
+        std::map<std::string, std::string>::iterator menu_it;
+        for (auto i : foods)
+        {
+            menu_it = find_if(map_it->second->menu.begin(), map_it->second->menu.end(), [i](std::pair<std::string, std::string> a){return a.first==i.first;});
+            if (menu_it == map_it->second->menu.end())   
+                throw errors(error_message::NOT_FOUND);
+            else
+                i.second.first = menu_it->second;
+        }
+    }  
+    for (auto i : map_it->second->reserves)
+    {
+        if (i.second->table_id == command_entered[3])
+        {
+            if(stoi(i.second->time_interval.first) < stoi(command_entered[4]) && stoi(i.second->time_interval.second) > stoi(command_entered[4]))
+                throw errors(error_message::PERMISSION_DENIED);
+            else if(stoi(i.second->time_interval.first) < stoi(command_entered[5]) && stoi(i.second->time_interval.second) > stoi(command_entered[5]))  
+                throw errors(error_message::PERMISSION_DENIED);      
+        }
+    } 
+    for (auto i : (*current_user->reserves))
+    {
+        if (stoi(i.second->time_interval.first) < stoi(command_entered[4]) && stoi(i.second->time_interval.second) > stoi(command_entered[4]))
+            throw errors(error_message::PERMISSION_DENIED);
+        if (stoi(i.second->time_interval.first) < stoi(command_entered[5]) && stoi(i.second->time_interval.second) > stoi(command_entered[5]))
+            throw errors(error_message::PERMISSION_DENIED);    
+    }
+    if (stoi(map_it->second->working_time.first) > stoi(command_entered[4]) || stoi(map_it->second->working_time.second) < stoi(command_entered[4]))
+        throw errors(error_message::PERMISSION_DENIED);
+    if (stoi(map_it->second->working_time.first) > stoi(command_entered[5]) || stoi(map_it->second->working_time.second) < stoi(command_entered[5]))
+        throw errors(error_message::PERMISSION_DENIED); 
+    std::string respond;
+    respond = set_reserve(command_entered, foods, map_it);
+    return respond;  
 }
