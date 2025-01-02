@@ -10,6 +10,7 @@ class process
     process();
     void resturan_init (char *);
     void district_init (char *);
+    void discount_init (char *);
     void begin(std::vector<std::string> &command_entered);
     protected:
     software UTaste;

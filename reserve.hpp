@@ -6,9 +6,9 @@
 struct  reserves
 {
     std::string table_id;
-    std::string reserve_id;
-    std::pair<std::string, std::string> time_interval;
-    std::map<std::string, std::pair<std::string, int>> foods;
+    int reserve_id;
+    std::pair<int, int> time_interval;
+    std::map<std::string, std::pair<int, int>> foods;
 };
 
 struct rest_reserve : reserves

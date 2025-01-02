@@ -12,6 +12,7 @@ class Post : protected process
         std::string pro_post_login(std::vector<std::string> &command_entered);
         std::string pro_post_logout(std::vector<std::string> &command_entered);
         std::string pro_post_reserve(std::vector<std::string> &command_entered);
+        std::string pro_post_increase_budget(std::vector<std::string> &command_entered);
 };
 
 #endif

@@ -32,10 +32,17 @@ void software::resturan_init (std::vector<std::string> rest_prop)
     (*all_resturans)[new_resturan->name] = new_resturan; 
 }
 
-void software::district_init (std::vector<std::string> rest_prop)
+void software::district_init (std::vector<std::string> dist_prop)
 {
     district *new_district = new district;
-    new_district->set_neighbors(rest_prop);
+    new_district->set_neighbors(dist_prop);
+}
+
+void software::discount_init (std::vector<std::string> disc_prop)
+{
+    (*all_resturans)[disc_prop[0]]->set_total_dis(disc_prop[1]);
+    (*all_resturans)[disc_prop[0]]->set_first_dis(disc_prop[2]);
+    (*all_resturans)[disc_prop[0]]->set_food_dis(disc_prop[3]);
 }
 
 void software::set_district (std::string district_name)
@@ -109,7 +116,7 @@ std::string software::resturan_detail_tables(std::string resturan_name)
         sorted_reserves = sort_reserves_by_times((*all_resturans)[resturan_name], i);
         for (auto j : sorted_reserves)
         {
-            respond += "("+j.second->time_interval.first+'-'+j.second->time_interval.second+"), ";   
+            respond += "("+std::to_string(j.second->time_interval.first)+'-'+std::to_string(j.second->time_interval.second)+"), ";   
         }
         respond = respond.substr(0, respond.length()-2);
         respond += "\n";
@@ -127,7 +134,7 @@ std::string software::get_resturan_detail(std::string resturan_name)
     respond += "Time: "+(*all_resturans)[resturan_name]->working_time.first+'-'+(*all_resturans)[resturan_name]->working_time.second+"\n";
     respond += "Menu: ";
     for (auto i : (*all_resturans)[resturan_name]->menu)
-        respond += i.first+"("+i.second+"), ";
+        respond += i.first+"("+std::to_string(i.second.first)+"), ";
     respond = respond.substr(0, respond.length()-2);
     respond += "\n";
     respond += resturan_detail_tables(resturan_name);
@@ -147,7 +154,7 @@ std::string software::get_all_reserves()
         {
             for (auto j : i.second->foods)
             {
-                respond += j.first+"("+j.second.first+") ";
+                respond += j.first+"("+std::to_string(j.second.first)+") ";
             }
         }
         respond += "\n";
@@ -172,7 +179,7 @@ std::string software::get_resturan_reserves(std::vector<std::string> &command_en
             {
                 for (auto j : i.second->foods)
                 {
-                    respond += j.first+"("+j.second.first+") ";
+                    respond += j.first+"("+std::to_string(j.second.first)+") ";
                 }
             }
             respond += "\n";
@@ -198,7 +205,7 @@ std::string software::get_resturan_one_reserve(std::vector<std::string> &command
     if (!(*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->foods.empty())
     {
         for (auto i : (*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->foods)
-            respond += i.first+"("+i.second.first+") ";
+            respond += i.first+"("+std::to_string(i.second.first)+") ";
     }   
     respond += "\n";        
     return respond;
@@ -261,31 +268,31 @@ void software::logout()
     current_user->logged_in = false;    
 }
 
-std::map<std::string, std::pair<std::string, int>> parse_foods(std::string foods)
+std::map<std::string, std::pair<int, int>> parse_foods(std::string foods)
 {
-    std::map<std::string, std::pair<std::string, int>> food_vec;
+    std::map<std::string, std::pair<int, int>> food_vec;
     std::stringstream ss = std::stringstream();
     ss << foods;
     while (ss.good())
     {
         getline (ss, foods, ',');
         if (food_vec.count(foods) == 0)
-            food_vec[foods] = {"", 1};
+            food_vec[foods] = {0, 1};
         else
             food_vec[foods].second += 1;    
     }
     return food_vec;
 }
 
-std::string calculate_price (std::map<std::string, std::pair<std::string, int>> &foods)
+std::string calculate_price (std::map<std::string, std::pair<int, int>> &foods)
 {
     int sum=0;
     for (auto i : foods)
-        sum += std::stoi(i.second.first)*i.second.second;
+        sum += i.second.first*i.second.second;
     return std::to_string(sum);   
 }
 
-std::string software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<std::string, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
+std::string software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<int, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
 {
     rest_reserve* rest_res = new rest_reserve;
     user_reserve* user_res = new user_reserve;
@@ -293,15 +300,15 @@ std::string software::set_reserve(std::vector<std::string> &command_entered, std
     user_res->table_id = command_entered[3];
     rest_res->username = current_user->username;
     user_res->resturan_name = command_entered[2];
-    int res_id = stoi(map_it->second->last_reserve_id);
+    int res_id = map_it->second->last_reserve_id;
     res_id += 1;
-    map_it->second->last_reserve_id = std::to_string(res_id);
-    rest_res->reserve_id = std::to_string(res_id);
-    user_res->reserve_id = std::to_string(res_id);
-    rest_res->time_interval.first = command_entered[4];
-    user_res->time_interval.first = command_entered[4];
-    rest_res->time_interval.second = command_entered[5];
-    user_res->time_interval.second = command_entered[5];
+    map_it->second->last_reserve_id = res_id;
+    rest_res->reserve_id = res_id;
+    user_res->reserve_id = res_id;
+    rest_res->time_interval.first = std::stoi(command_entered[4]);
+    user_res->time_interval.first = std::stoi(command_entered[4]);
+    rest_res->time_interval.second = std::stoi(command_entered[5]);
+    user_res->time_interval.second = std::stoi(command_entered[5]);
     if (command_entered.size() == 7)
     {
         for (auto i : foods)
@@ -330,7 +337,7 @@ std::string software::set_reserve(std::vector<std::string> &command_entered, std
 std::string software::reserve(std::vector<std::string> &command_entered)
 {
     std::map<std::string, resturan*>::iterator map_it;
-    std::map<std::string, std::pair<std::string, int>> foods;
+    std::map<std::string, std::pair<int, int>> foods;
     map_it = find_if((*all_resturans).begin(), (*all_resturans).end(), [command_entered](std::pair<std::string, resturan*> a){return a.first==command_entered[2];});
     if (map_it == (*all_resturans).end())
         throw errors(error_message::NOT_FOUND);
@@ -339,31 +346,31 @@ std::string software::reserve(std::vector<std::string> &command_entered)
     if (command_entered.size() == 7)
     {
         foods = parse_foods(command_entered[6]);
-        std::map<std::string, std::string>::iterator menu_it;
+        std::map<std::string, std::pair<int, specific_food_discount*>>::iterator menu_it;
         for (auto i : foods)
         {
-            menu_it = find_if(map_it->second->menu.begin(), map_it->second->menu.end(), [i](std::pair<std::string, std::string> a){return a.first==i.first;});
+            menu_it = find_if(map_it->second->menu.begin(), map_it->second->menu.end(), [i](std::pair<std::string, std::pair<int, specific_food_discount*>> a){return a.first==i.first;});
             if (menu_it == map_it->second->menu.end())   
                 throw errors(error_message::NOT_FOUND);
             else
-                i.second.first = menu_it->second;
+                i.second.first = menu_it->second.first;
         }
     }  
     for (auto i : map_it->second->reserves)
     {
         if (i.second->table_id == command_entered[3])
         {
-            if(stoi(i.second->time_interval.first) < stoi(command_entered[4]) && stoi(i.second->time_interval.second) > stoi(command_entered[4]))
+            if(i.second->time_interval.first < stoi(command_entered[4]) && i.second->time_interval.second > stoi(command_entered[4]))
                 throw errors(error_message::PERMISSION_DENIED);
-            else if(stoi(i.second->time_interval.first) < stoi(command_entered[5]) && stoi(i.second->time_interval.second) > stoi(command_entered[5]))  
+            else if(i.second->time_interval.first < stoi(command_entered[5]) && i.second->time_interval.second > stoi(command_entered[5]))  
                 throw errors(error_message::PERMISSION_DENIED);      
         }
     } 
     for (auto i : (*current_user->reserves))
     {
-        if (stoi(i.second->time_interval.first) < stoi(command_entered[4]) && stoi(i.second->time_interval.second) > stoi(command_entered[4]))
+        if (i.second->time_interval.first < std::stoi(command_entered[4]) && i.second->time_interval.second > std::stoi(command_entered[4]))
             throw errors(error_message::PERMISSION_DENIED);
-        if (stoi(i.second->time_interval.first) < stoi(command_entered[5]) && stoi(i.second->time_interval.second) > stoi(command_entered[5]))
+        if (i.second->time_interval.first < std::stoi(command_entered[5]) && i.second->time_interval.second > std::stoi(command_entered[5]))
             throw errors(error_message::PERMISSION_DENIED);    
     }
     if (stoi(map_it->second->working_time.first) > stoi(command_entered[4]) || stoi(map_it->second->working_time.second) < stoi(command_entered[4]))
@@ -373,4 +380,10 @@ std::string software::reserve(std::vector<std::string> &command_entered)
     std::string respond;
     respond = set_reserve(command_entered, foods, map_it);
     return respond;  
+}
+
+std::string software::increase_budget(std::vector<std::string> &command_entered)
+{
+    current_user->wallet += std::stoi(command_entered[2]);
+    return OK;
 }

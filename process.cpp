@@ -5,16 +5,11 @@
 std::vector<std::string> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
 std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES};
 std::vector<std::string> process::sub_comma_put = {sub_command_put::MY_DISTRICT};
-std::vector<std::string> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP};
+std::vector<std::string> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP, sub_command_post::INCREASE_BUDGET};
 std::vector<std::string> process::sub_comma_delete = {sub_command_delete::RESERVE};
 
 process::process()
 {
-    // main_commands
-    // sub_comma_get
-    // sub_comma_put
-    // sub_comma_post
-    // sub_comma_delete
 }
 
 std::string process::pro_get (std::vector<std::string> &command_entered){}
@@ -260,6 +255,21 @@ void process::parse_post_reserve (std::vector<std::string> &command_entered, std
     command_entered.push_back(input);                                
 }
 
+void parse_post_inc_budget(std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    std::string input;
+    ss >> input;
+    if (input != sub_command_post::AMOUNT)
+        throw errors(error_message::BAD_REQUEST);
+    ss >> input;
+    if (double_qoute_error(input))
+        throw errors(error_message::BAD_REQUEST);
+    input = input.substr(1, input.length()-2);
+    if (is_not_int(input))
+        throw errors(error_message::BAD_REQUEST);
+    command_entered.push_back(input);     
+}
+
 void process::parse_sub_post(std::vector<std::string> &command_entered, std::stringstream &ss)
 {
     std::string input;
@@ -278,6 +288,8 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
         parse_post_login(command_entered, ss);
     else if (command_entered[1] == sub_command_post::RESERVE)
         parse_post_reserve(command_entered, ss);
+    else if (command_entered[1] == sub_command_post::INCREASE_BUDGET)
+        parse_post_inc_budget(command_entered, ss);   
 }
 
 void parse_delete_reserve(std::vector<std::string> &command_entered, std::stringstream &ss)
@@ -383,6 +395,23 @@ void process::district_init (char *restrict_file)
     }
 }
 
+void process::discount_init (char *discount_file)
+{
+    std::ifstream properties(discount_file);
+    if (!properties.is_open())
+    {
+        std::cerr << "trouble opening file" << std::endl;
+        return;
+    }
+    std::string line;
+    std::vector<std::string> discount_info;
+    while(getline(properties, line, ','))
+    {
+        discount_info = parse_line(line);
+        UTaste.discount_init(discount_info);
+    }
+}
+
 void process::begin(std::vector<std::string> &command_entered)
 {
     std::string input;
@@ -396,5 +425,4 @@ void process::begin(std::vector<std::string> &command_entered)
     {
         e.printError();
     }
-    
 }

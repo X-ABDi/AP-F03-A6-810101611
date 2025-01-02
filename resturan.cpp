@@ -25,7 +25,7 @@ void resturan::set_menu (std::string raw_menu)
     for (auto i : tokens)
     {
         size_t pos = i.find(":");
-        menu[i.substr(0, pos)] = stoi(i.substr(pos+1));
+        menu[i.substr(0, pos)].first = std::stoi(i.substr(pos+1));
     }
 }
 
@@ -36,5 +36,65 @@ void resturan::set_tables (std::string table_number)
         table* new_table = new table;
         new_table->table_id = i+1;
         new_table->reserved = false;
+    }
+}
+
+void resturan::set_total_dis(std::string total_dis_prop)
+{
+    std::stringstream ss = std::stringstream();
+    ss << total_dis_prop;
+    std::string type;
+    getline(ss, type, ';');
+    std::string minimum;
+    getline(ss, minimum, ';');
+    std::string value;
+    getline(ss, value, ';');
+    total_dis.set_properties(type, minimum, value);
+}
+
+void resturan::set_first_dis (std::string first_dis_prop)
+{
+    std::stringstream ss = std::stringstream();
+    ss << first_dis_prop;
+    std::string type;
+    getline(ss, type, ';');
+    std::string value;
+    getline(ss, value, ';');
+    first_dis.set_properties(type, value, "");
+}
+
+std::vector<std::string> parse_food_discount (std::string food_dis_prop)
+{
+    std::vector<std::string> every_food;
+    std::string food;
+    std::stringstream ss = std::stringstream();
+    ss << food_dis_prop;
+    while (getline(ss, food, '|'))
+        every_food.push_back(food);
+    return every_food;    
+}
+
+void resturan::put_in_menu (specific_food_discount* food_dis)
+{
+    menu[food_dis->get_food_name()].second = food_dis;
+}
+
+void resturan::set_food_dis (std::string food_dis_prop)
+{
+    std::vector<std::string> every_food;
+    every_food = parse_food_discount (food_dis_prop);
+    std::string type;
+    std::string food_name;
+    std::string value;
+    std::stringstream ss = std::stringstream();
+    for (auto i : every_food)
+    {
+        ss << i;
+        getline(ss, type, ';');
+        getline(ss, food_name, ';');
+        getline(ss, value, ';');
+        specific_food_discount* new_food_dis = new specific_food_discount;
+        new_food_dis->set_properties(type, food_name, value);
+        put_in_menu(new_food_dis);
     }
 }

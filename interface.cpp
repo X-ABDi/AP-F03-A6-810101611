@@ -46,6 +46,7 @@ void interface::init (char *argv[])
     std::string respond;
     district_init(argv[2]);
     restaurant_init(argv[1]);
+    discount_init(argv[3]);
     run();
 }
 
@@ -57,4 +58,9 @@ void interface::restaurant_init (char *resturan_file)
 void interface::district_init (char *restrict_file)
 {
     general_methods.district_init(restrict_file);
+}
+
+void interface::discount_init (char *discount_file)
+{
+    general_methods.discount_init(discount_file);
 }

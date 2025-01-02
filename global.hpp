@@ -37,6 +37,8 @@ namespace sub_command_post{
     const std::string END_TIME = "end_time";
     const std::string FOODS = "foods";
     const std::string RESERVE_ID = "reserve_id";
+    const std::string INCREASE_BUDGET = "increase_budget";
+    const std::string AMOUNT = "amount";
 }
 
 namespace sub_command_get{

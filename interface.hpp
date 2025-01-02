@@ -18,6 +18,7 @@ class interface
         void run ();
         void restaurant_init(char *resturan_file);
         void district_init(char *restrict_file);
+        void discount_init(char *discount_file);
 };
 
 #endif

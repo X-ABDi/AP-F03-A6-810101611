@@ -29,6 +29,15 @@ std::string Post::pro_post_reserve(std::vector<std::string> &command_entered)
     return respond;
 }
 
+std::string Post::pro_post_increase_budget(std::vector<std::string> &command_entered)
+{
+    std::string respond;
+    if (!UTaste.logged_in())
+        throw errors(error_message::PERMISSION_DENIED);
+    respond = UTaste.increase_budget(command_entered);
+    return respond;    
+}
+
 std::string Post::pro_post (std::vector<std::string> &command_entered)
 {
     std::string respond;
@@ -40,6 +49,8 @@ std::string Post::pro_post (std::vector<std::string> &command_entered)
         respond = pro_post_logout(command_entered);
     else if (command_entered[1] == sub_command_post::RESERVE)
         respond = pro_post_reserve(command_entered);
+    else if (command_entered[1] == sub_command_post::INCREASE_BUDGET) 
+        respond = pro_post_increase_budget(command_entered);   
     return respond;                
 }
 
