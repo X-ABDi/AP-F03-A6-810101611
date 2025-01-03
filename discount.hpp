@@ -18,13 +18,14 @@ class total_price_discount : protected discount
         int minimum_total;
     public:
         void set_properties(std::string, std::string, std::string);    
-
+    friend class resturan;
 };
 
 class first_order_discount : protected discount
 {
     public:
         void set_properties(std::string, std::string, std::string);
+    friend class resturan;    
 };
 
 class specific_food_discount : protected discount
@@ -34,6 +35,7 @@ class specific_food_discount : protected discount
     public:
         void set_properties(std::string, std::string, std::string);
         std::string get_food_name();
+    friend class resturan;    
 };
 
 #endif

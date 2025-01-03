@@ -8,6 +8,7 @@
 #include <vector>
 
 #define OK "OK"
+#define NONE "none"
 
 namespace error_message{
     const std::string EMPTY = "Empty";
@@ -50,6 +51,7 @@ namespace sub_command_get{
     const std::string RESTAURANT_NAME = "restaurant_name";
     const std::string RESERVES = "reserves";
     const std::string RESERVE_ID = "reserve_id";
+    const std::string SHOW_BUDGET = "show_budget";
 }
 
 namespace sub_command_put{

@@ -13,6 +13,8 @@ std::string Get::pro_get (std::vector<std::string> &command_entered)
         respond = pro_get_restdetail(command_entered); 
     else if (command_entered[1] == sub_command_get::RESERVES)
         respond = pro_get_reserves(command_entered);
+    else if (command_entered[1] == sub_command_get::SHOW_BUDGET)
+        respond = pro_get_budget(command_entered);    
     return respond;
 }
 
@@ -47,5 +49,12 @@ std::string Get::pro_get_reserves(std::vector<std::string> &command_entered)
 {
     std::string respond;
     respond = UTaste.get_reserves(command_entered);
+    return respond;
+}
+
+std::string Get::pro_get_budget(std::vector<std::string> &command_entered)
+{
+    std::string respond;
+    respond = UTaste.get_budget();
     return respond;
 }

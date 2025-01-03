@@ -17,6 +17,7 @@ class resturan{
     std::string name;
     std::map<std::string, std::pair<int, specific_food_discount*>> menu;
     std::string district;
+    bool food_discount;
     total_price_discount total_dis;
     first_order_discount first_dis;
     std::map<std::string,rest_reserve*> reserves;
@@ -25,13 +26,14 @@ class resturan{
     int last_reserve_id;
 
     public:
-    ~resturan();
+    // ~resturan();
     void set_menu (std::string);
     void set_tables (std::string);
     void set_total_dis(std::string);
     void set_first_dis (std::string);
     void set_food_dis (std::string);
     void put_in_menu (specific_food_discount*);
+    std::string get_discounts_detail();
 
     friend class software;
     friend class district;

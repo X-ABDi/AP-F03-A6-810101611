@@ -3,7 +3,7 @@
 #include "process.hpp"
 
 std::vector<std::string> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
-std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES};
+std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES, sub_command_get::SHOW_BUDGET};
 std::vector<std::string> process::sub_comma_put = {sub_command_put::MY_DISTRICT};
 std::vector<std::string> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP, sub_command_post::INCREASE_BUDGET};
 std::vector<std::string> process::sub_comma_delete = {sub_command_delete::RESERVE};
@@ -115,6 +115,11 @@ void parse_get_reserves (std::vector<std::string> &command_entered, std::strings
     command_entered.push_back(input);                
 }
 
+void parse_get_budget (std::vector<std::string> &command_entered, std::stringstream &ss)
+{
+    return;
+}
+
 void process::parse_sub_get(std::vector<std::string> &command_entered, std::stringstream &ss)
 {
     std::string input;
@@ -132,7 +137,9 @@ void process::parse_sub_get(std::vector<std::string> &command_entered, std::stri
     else if (command_entered[1] == sub_command_get::DISTRICTS)
         parse_get_district(command_entered, ss);  
     else if (command_entered[1] == sub_command_get::RESERVES)
-        parse_get_reserves(command_entered, ss);                  
+        parse_get_reserves(command_entered, ss);  
+    else if (command_entered[1] == sub_command_get::SHOW_BUDGET)
+        parse_get_budget(command_entered, ss);                   
 }
 
 void parse_put_district(std::vector<std::string> &command_entered, std::stringstream &ss)
@@ -267,6 +274,8 @@ void parse_post_inc_budget(std::vector<std::string> &command_entered, std::strin
     input = input.substr(1, input.length()-2);
     if (is_not_int(input))
         throw errors(error_message::BAD_REQUEST);
+    if (std::stoi(input) < 0)
+        throw errors(error_message::BAD_REQUEST);    
     command_entered.push_back(input);     
 }
 
@@ -331,8 +340,6 @@ void process::parse_sub_delete(std::vector<std::string> &command_entered, std::s
 
 void process::parse_sub_command(std::vector<std::string> &command_entered, std::stringstream &ss)
 {
-    if (std::find(main_commands.begin(), main_commands.end(), command_entered[0]) == command_entered.end())
-        throw errors(error_message::BAD_REQUEST);
     if(command_entered[0] == main_command::GET)
         parse_sub_get(command_entered, ss);
     else if(command_entered[0] == main_command::PUT)

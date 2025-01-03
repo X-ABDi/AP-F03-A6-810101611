@@ -19,6 +19,13 @@ bool software::logged_in()
     return current_user->logged_in;
 }
 
+std::string software::get_budget()
+{
+    if (logged_in() == false)
+        throw errors(error_message::PERMISSION_DENIED);
+    return std::to_string(current_user->wallet);    
+}
+
 void software::resturan_init (std::vector<std::string> rest_prop)
 {
     resturan *new_resturan = new resturan;
@@ -124,6 +131,13 @@ std::string software::resturan_detail_tables(std::string resturan_name)
     return respond;
 }
 
+std::string software::resturan_detail_discounts(std::string resturan_name)
+{
+    std::string respond;
+    respond = (*all_resturans)[resturan_name]->get_discounts_detail();
+    return respond;
+}
+
 std::string software::get_resturan_detail(std::string resturan_name)
 {
     if ((*all_resturans).count(resturan_name) == 0)
@@ -138,6 +152,7 @@ std::string software::get_resturan_detail(std::string resturan_name)
     respond = respond.substr(0, respond.length()-2);
     respond += "\n";
     respond += resturan_detail_tables(resturan_name);
+    respond += resturan_detail_discounts(resturan_name);
     return respond;
 }
 
@@ -323,11 +338,12 @@ std::string software::set_reserve(std::vector<std::string> &command_entered, std
     respond += "Reserve ID: "+std::to_string(res_id)+"\n";
     respond += "Table "+command_entered[3]+" for "+command_entered[4]+" to "+command_entered[5];
     respond += " in "+command_entered[2]+"\n";
-    respond += "Price: ";
+    respond += "Original Price: ";
     if (command_entered.size() == 7)
     {
         std::string price = calculate_price(foods);
         respond += price+"\n";
+        
     }
     else
         respond += "0\n";

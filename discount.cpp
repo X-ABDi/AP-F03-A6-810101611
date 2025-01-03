@@ -1,5 +1,25 @@
 #include "discount.hpp"
 
+total_price_discount::total_price_discount()
+{
+    type = "";
+    minimum_total = 0;
+    value = 0;
+}
+
+first_order_discount::first_order_discount()
+{
+    type = "";
+    value = 0;
+}
+
+specific_food_discount::specific_food_discount()
+{
+    type = "";
+    food_name = "";
+    value = 0;
+}
+
 void total_price_discount::set_properties(std::string type_, std::string min, std::string value_)
 {
     type = type_;
