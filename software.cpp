@@ -28,6 +28,8 @@ std::string software::get_budget()
 
 void software::resturan_init (std::vector<std::string> rest_prop)
 {
+    // for (auto i : rest_prop)
+    //     std::cout << i << std::endl;
     resturan *new_resturan = new resturan;
     new_resturan->name = rest_prop[0];
     new_resturan->district = rest_prop[1];
@@ -50,6 +52,7 @@ void software::discount_init (std::vector<std::string> disc_prop)
     (*all_resturans)[disc_prop[0]]->set_total_dis(disc_prop[1]);
     (*all_resturans)[disc_prop[0]]->set_first_dis(disc_prop[2]);
     (*all_resturans)[disc_prop[0]]->set_food_dis(disc_prop[3]);
+    std::cout << "returning from discount init" << std::endl;
 }
 
 void software::set_district (std::string district_name)
@@ -244,6 +247,7 @@ std::string software::get_reserves(std::vector<std::string> &command_entered)
 
 void software::signup(std::vector<std::string> &command_entered)
 {
+    std::cout << "software signup last step of implementation" << std::endl;
     std::map<std::string, user*>::iterator map_it;
     map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.first == command_entered[2];});
     if (map_it != (*all_users).end())

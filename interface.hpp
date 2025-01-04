@@ -13,8 +13,12 @@
 class interface
 {
     process general_methods;
+    Post post_object;
+    Get get_object;
+    Put put_object;
+    Delete delete_object;
     public:
-        void init (char *argv[]);
+        void initi (char *argv[]);
         void run ();
         void restaurant_init(char *resturan_file);
         void district_init(char *restrict_file);

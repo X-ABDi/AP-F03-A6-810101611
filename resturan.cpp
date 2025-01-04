@@ -40,7 +40,10 @@ void resturan::set_tables (std::string table_number)
 void resturan::set_total_dis(std::string total_dis_prop)
 {
     if (total_dis_prop == NONE)
+    {
+        std::cout << "total discount success" << std::endl;
         return;
+    }
     std::stringstream ss = std::stringstream();
     ss << total_dis_prop;
     std::string type;
@@ -50,12 +53,16 @@ void resturan::set_total_dis(std::string total_dis_prop)
     std::string value;
     getline(ss, value, ';');
     total_dis.set_properties(type, minimum, value);
+    std::cout << "total discount success" << std::endl;
 }
 
 void resturan::set_first_dis (std::string first_dis_prop)
 {
     if (first_dis_prop == NONE)
+    {
+        std::cout << "first discount success" << std::endl;
         return;
+    }    
     std::stringstream ss = std::stringstream();
     ss << first_dis_prop;
     std::string type;
@@ -63,16 +70,21 @@ void resturan::set_first_dis (std::string first_dis_prop)
     std::string value;
     getline(ss, value, ';');
     first_dis.set_properties(type, value, "");
+    std::cout << "first discount success" << std::endl;
 }
 
 std::vector<std::string> parse_food_discount (std::string food_dis_prop)
 {  
+    // std::cout << "parse food discount" << std::endl;
     std::vector<std::string> every_food;
     std::string food;
     std::stringstream ss = std::stringstream();
     ss << food_dis_prop;
     while (getline(ss, food, '|'))
+    {
+        // std::cout << food << std::endl;
         every_food.push_back(food);
+    }
     return every_food;    
 }
 
@@ -86,6 +98,7 @@ void resturan::set_food_dis (std::string food_dis_prop)
     if (food_dis_prop == NONE)
     {    
         food_discount = false;
+        std::cout << "food dis success" <<std::endl;
         return;
     }
     food_discount = true;
@@ -99,12 +112,13 @@ void resturan::set_food_dis (std::string food_dis_prop)
     {
         ss << i;
         getline(ss, type, ';');
-        getline(ss, food_name, ';');
-        getline(ss, value, ';');
+        getline(ss, food_name, ':');
+        getline(ss, value);
         specific_food_discount* new_food_dis = new specific_food_discount;
         new_food_dis->set_properties(type, food_name, value);
         put_in_menu(new_food_dis);
     }
+    std::cout << "food dis success" <<std::endl;
 }
 
 std::string resturan::get_discounts_detail()

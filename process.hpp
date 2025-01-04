@@ -7,7 +7,6 @@
 class process
 {
     public:
-    process();
     void resturan_init (char *);
     void district_init (char *);
     void discount_init (char *);
@@ -22,7 +21,7 @@ class process
     static std::vector<std::string> sub_comma_delete;
     static std::vector<std::string> parse_line(std::string line);
     static std::vector<std::string> parse_neighbor(std::string nghbrs);
-    static std::vector<std::string> parse_command(std::string command); 
+    static void parse_command(std::vector<std::string> &command_entered, std::string input); 
     static void parse_sub_command(std::vector<std::string> &command_entered, std::stringstream &ss);   
     static void parse_sub_get(std::vector<std::string> &command_entered, std::stringstream &ss);
     static void parse_sub_put(std::vector<std::string> &command_entered, std::stringstream &ss);

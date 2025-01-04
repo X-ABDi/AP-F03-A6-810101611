@@ -8,6 +8,7 @@ void interface::run ()
     while(true)
     {
         general_methods.begin(command_entered);
+        std::cout << "running interface, parsed and back" << std::endl;
         if (command_entered[0] == main_command::GET)
         {
             Get* get_object;
@@ -24,10 +25,13 @@ void interface::run ()
         }
         else if (command_entered[0] == main_command::POST)
         {
-            Post* post_object;
+            std::cout << "before casting to sub class" << std::endl;
+            Post* post_object = post_object;
             process* base_ptr = &general_methods;
             post_object = dynamic_cast<Post*>(base_ptr);
+            std::cout << "after dynamic cast" << std::endl;
             respond = post_object->pro_post(command_entered);
+            std::cout << "process done" << std::endl;
         }
         else if (command_entered[0] == main_command::DELETE)
         {
@@ -41,13 +45,19 @@ void interface::run ()
     }    
 }
 
-void interface::init (char *argv[])
+void interface::initi (char *argv[])
 {
+    try{
     std::string respond;
     district_init(argv[2]);
     restaurant_init(argv[1]);
     discount_init(argv[3]);
     run();
+    }
+    catch (errors &e)
+    {
+        e.printError();
+    }
 }
 
 void interface::restaurant_init (char *resturan_file)

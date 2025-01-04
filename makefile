@@ -13,4 +13,4 @@ $(TARGET): $(OBJS)
 	$(CC) $(STD) -c $< -o $@
 
 clean:	
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(TARGET)

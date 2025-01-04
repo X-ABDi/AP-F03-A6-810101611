@@ -8,10 +8,6 @@ std::vector<std::string> process::sub_comma_put = {sub_command_put::MY_DISTRICT}
 std::vector<std::string> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP, sub_command_post::INCREASE_BUDGET};
 std::vector<std::string> process::sub_comma_delete = {sub_command_delete::RESERVE};
 
-process::process()
-{
-}
-
 std::string process::pro_get (std::vector<std::string> &command_entered){}
 std::string process::pro_put (std::vector<std::string> &command_entered){}
 std::string process::pro_post (std::vector<std::string> &command_entered){}
@@ -37,7 +33,7 @@ bool is_not_int (std::string input)
 
 std::vector<std::string> process::parse_line (std::string line) 
 {
-    std::regex re(",\\s*"); 
+    std::regex re(","); 
     std::sregex_token_iterator it(line.begin(), line.end(), re, -1);
     std::sregex_token_iterator reg_end;
 
@@ -171,6 +167,7 @@ void process::parse_sub_put(std::vector<std::string> &command_entered, std::stri
 
 void process::parse_post_signup (std::vector<std::string> &command_entered, std::stringstream &ss)
 {
+    std::cout << "parse post signup" << std::endl;
     std::string input;
     ss >> input;
     if (input != sub_command_post::USERNAME)
@@ -178,6 +175,7 @@ void process::parse_post_signup (std::vector<std::string> &command_entered, std:
     ss >> input;
     if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
+    std::cout << "it might be for substr" << std::endl;    
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
     ss >> input;
@@ -186,8 +184,10 @@ void process::parse_post_signup (std::vector<std::string> &command_entered, std:
     ss >> input;
     if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
+    std::cout << "it might be for substr" << std::endl;    
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
+    std::cout << "signup parsed successfully" << std::endl;
 }
 
 void process::parse_post_login (std::vector<std::string> &command_entered, std::stringstream &ss)
@@ -283,12 +283,16 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
 {
     std::string input;
     ss >> input;
+    std::cout << input << std::endl;
     if (find(sub_comma_post.begin(), sub_comma_post.end(), input) == sub_comma_post.end())
         throw errors(error_message::BAD_REQUEST);
+        std::cout << "not parse sub post" << std::endl;
     command_entered.push_back(input);    
     ss >> input;    
     if (input != "?" )
         throw errors(error_message::BAD_REQUEST);
+    std::cout << "not ? sign" << std::endl; 
+    std::cout << command_entered[1] << std::endl;   
     if (command_entered[1] == sub_command_post::LOGOUT)
         return;
     else if (command_entered[1] == sub_command_post::SIGNUP)
@@ -348,30 +352,30 @@ void process::parse_sub_command(std::vector<std::string> &command_entered, std::
         parse_sub_post(command_entered, ss);
     else if(command_entered[0] == main_command::DELETE)
         parse_sub_delete(command_entered, ss);     
-
 }
 
-std::vector<std::string> process::parse_command(std::string input)
+void process::parse_command(std::vector<std::string> &command_entered, std::string input)
 {
-    std::vector<std::string> command_entered;
     std::stringstream ss = std::stringstream();
     ss << input;
     ss >> input;
+    std::cout << input << std::endl;
+    for (auto i : main_commands)
+        std::cout << i << std::endl;
     if(find(main_commands.begin(), main_commands.end(), input) == main_commands.end())
         throw errors(error_message::BAD_REQUEST);
+    std::cout << "not the main command" << std::endl;    
     command_entered.push_back(input);
     parse_sub_command(command_entered, ss);
-    return command_entered;
 }
 
 void process::resturan_init (char *resturan_file)
 {
-    std::ifstream properties(resturan_file);
+    std::ifstream properties;
+    std::string file = resturan_file;
+    properties.open(file);
     if (!properties.is_open())
-    {
-        std::cerr << "trouble opening file" << std::endl;
-        return;
-    } 
+        throw errors("can not open file");
     std::string line;
     std::vector<std::string> rest_prop;
     while(getline(properties, line))
@@ -379,54 +383,55 @@ void process::resturan_init (char *resturan_file)
         rest_prop = parse_line (line);
         UTaste.resturan_init (rest_prop);
     }
+    properties.close();
 }
 
 void process::district_init (char *restrict_file)
 {
-    std::ifstream properties(restrict_file);
+    std::ifstream properties;
+    std::string file = restrict_file;
+    properties.open(file);
     if (!properties.is_open())
-    {
-        std::cerr << "trouble opening file" << std::endl;
-        return;
-    } 
+        throw errors("can not open file");
     std::string line;
     std::vector<std::string> rest_prop;
     std::vector<std::string> neighbors;
     while(getline(properties, line))
     {
         rest_prop = parse_line (line);
-        neighbors = parse_neighbor(rest_prop[1]);
-        rest_prop.erase(rest_prop.begin()+1);
-        rest_prop.insert(rest_prop.end(), neighbors.begin(), neighbors.end());
+        if (rest_prop.size() > 1)
+        {
+            neighbors = parse_neighbor(rest_prop[1]);
+            rest_prop.erase(rest_prop.begin()+1);
+            rest_prop.insert(rest_prop.end(), neighbors.begin(), neighbors.end());
+        }
         UTaste.district_init (rest_prop);
     }
+    properties.close();
 }
 
 void process::discount_init (char *discount_file)
 {
     std::ifstream properties(discount_file);
-    if (!properties.is_open())
-    {
-        std::cerr << "trouble opening file" << std::endl;
-        return;
-    }
+    if (!properties)
+        throw errors("can not open file");
     std::string line;
     std::vector<std::string> discount_info;
-    while(getline(properties, line, ','))
+    while(getline(properties, line))
     {
         discount_info = parse_line(line);
         UTaste.discount_init(discount_info);
     }
+    properties.close();
 }
 
 void process::begin(std::vector<std::string> &command_entered)
 {
     std::string input;
-    std::cin >> input;
-    
+    getline(std::cin, input);
     try
     {
-        command_entered = parse_command(input);
+        parse_command(command_entered, input);
     }
     catch (errors &e)
     {

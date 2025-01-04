@@ -1,0 +1,3 @@
+sib,enghelab,pitza:320;burger:140;falafel:40,8,24,7
+ali,ferdosi,hotdog:95;burger:150;bandari:45,10,24,10
+mashghanbar,shahrak gharb,kabab:80;fesenjoon:85,6,22,30
