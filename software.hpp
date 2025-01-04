@@ -38,7 +38,10 @@ class software
     void login(std::vector<std::string> &command_entered);
     void logout();
     std::string reserve(std::vector<std::string> &command_entered);
-    std::string set_reserve(std::vector<std::string> &command_entered,std::map<std::string, std::pair<int, int>> &foods, std::map<std::string, resturan*>::iterator &map_it);
+    std::string set_reserve(std::vector<std::string> &command_entered,std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it);
+    std::string calculate_specific_discounts (std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it);
+    std::string calculate_first_discount (std::string price, std::map<std::string, resturan*>::iterator &map_it);
+    std::string calculate_order_discount (std::string price, std::map<std::string, resturan*>::iterator &map_it);
     std::string increase_budget(std::vector<std::string> &command_entered);
     void resturan_init (std::vector<std::string>);
     void district_init (std::vector<std::string>);

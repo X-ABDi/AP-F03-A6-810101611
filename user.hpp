@@ -9,7 +9,7 @@ class user{
     std::string password;
     std::map<std::string, user_reserve*>* reserves;
     std::string district;
-    int wallet;
+    float wallet;
     bool logged_in;
     public:
         user(std::string, std::string);

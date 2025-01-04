@@ -67,6 +67,7 @@ void software::delete_reserve (std::vector<std::string> &command_entered)
         throw errors(error_message::NOT_FOUND);
     if ((*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->username != current_user->username)
         throw errors(error_message::PERMISSION_DENIED);
+    current_user->wallet += (*all_resturans)[command_entered[2]]->reserves[command_entered[2]]->discount_price*discount_type::RETURN_PERCENT; 
     (*all_resturans)[command_entered[2]]->reserves.erase(command_entered[2]);
     (*current_user->reserves).erase(command_entered[3]); 
 }
@@ -168,9 +169,8 @@ std::string software::get_all_reserves()
         if (!i.second->foods.empty())
         {
             for (auto j : i.second->foods)
-            {
                 respond += j.first+"("+std::to_string(j.second.first)+") ";
-            }
+            respond += std::to_string(i.second->raw_price)+" "+std::to_string(i.second->discount_price);    
         }
         respond += "\n";
     }
@@ -193,9 +193,8 @@ std::string software::get_resturan_reserves(std::vector<std::string> &command_en
             if (!i.second->foods.empty())
             {
                 for (auto j : i.second->foods)
-                {
                     respond += j.first+"("+std::to_string(j.second.first)+") ";
-                }
+                respond += std::to_string(i.second->raw_price)+" "+std::to_string(i.second->discount_price);    
             }
             respond += "\n";
         }
@@ -221,6 +220,9 @@ std::string software::get_resturan_one_reserve(std::vector<std::string> &command
     {
         for (auto i : (*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->foods)
             respond += i.first+"("+std::to_string(i.second.first)+") ";
+        respond += (*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->raw_price;
+        respond += " ";
+        respond += (*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->discount_price;    
     }   
     respond += "\n";        
     return respond;
@@ -283,9 +285,9 @@ void software::logout()
     current_user->logged_in = false;    
 }
 
-std::map<std::string, std::pair<int, int>> parse_foods(std::string foods)
+std::map<std::string, std::pair<float, int>> parse_foods(std::string foods)
 {
-    std::map<std::string, std::pair<int, int>> food_vec;
+    std::map<std::string, std::pair<float, int>> food_vec;
     std::stringstream ss = std::stringstream();
     ss << foods;
     while (ss.good())
@@ -299,15 +301,58 @@ std::map<std::string, std::pair<int, int>> parse_foods(std::string foods)
     return food_vec;
 }
 
-std::string calculate_price (std::map<std::string, std::pair<int, int>> &foods)
+std::string calculate_price (std::map<std::string, std::pair<float, int>> &foods)
 {
-    int sum=0;
+    float sum=0;
     for (auto i : foods)
         sum += i.second.first*i.second.second;
     return std::to_string(sum);   
 }
 
-std::string software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<int, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
+std::string software::calculate_specific_discounts (std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
+{
+    if (map_it->second->food_discount == false)
+        return "0";
+    float specific_discount=0;    
+    for (auto i : foods)
+    {
+        if(map_it->second->menu[i.first].second->type == discount_type::AMOUNT)
+            specific_discount += (map_it->second->menu[i.first].second->value)*float(i.second.second);
+        else if(map_it->second->menu[i.first].second->type == discount_type::PERCENT)
+            specific_discount += (map_it->second->menu[i.first].second->value*float(map_it->second->menu[i.first].first)/100)*i.second.second;
+    }  
+    std::string respond = "";
+    respond += "Total Item Specific Discount: "+std::to_string(specific_discount)+"\n";
+    return respond;
+}
+
+std::string software::calculate_first_discount (std::string price, std::map<std::string, resturan*>::iterator &map_it)
+{
+    if (map_it->second->first_dis.type == "")
+        return "0";
+    if (map_it->second->first_dis.type == discount_type::AMOUNT)
+        price = map_it->second->first_dis.value;
+    else if (map_it->second->first_dis.type == discount_type::PERCENT)
+        price = std::to_string(std::stof(price)*float(map_it->second->first_dis.value)/100);    
+    std::string respond="";
+    respond += "First Order Discount: "+price+"\n";
+    return respond;
+}
+
+std::string software::calculate_order_discount (std::string price, std::map<std::string, resturan*>::iterator &map_it)
+{
+    if (map_it->second->total_dis.type == "")
+        return "0";
+    else if (map_it->second->total_dis.type == discount_type::AMOUNT)
+        price = std::to_string(map_it->second->total_dis.value);
+    else if (map_it->second->total_dis.type == discount_type::PERCENT)
+        price = std::to_string(std::stof(price)*float(map_it->second->total_dis.value)/100);
+    std::string respond = "";
+    respond += "Order Amount Discount: "+price+"\n";
+    return respond;            
+}
+
+std::string software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
 {
     rest_reserve* rest_res = new rest_reserve;
     user_reserve* user_res = new user_reserve;
@@ -342,18 +387,51 @@ std::string software::set_reserve(std::vector<std::string> &command_entered, std
     if (command_entered.size() == 7)
     {
         std::string price = calculate_price(foods);
+        rest_res->raw_price = std::stof(price);
+        user_res->raw_price = std::stof(price);
         respond += price+"\n";
-        
+        std::string item_discount = calculate_specific_discounts(foods, map_it);
+        price = std::to_string(std::stof(price) - std::stof(item_discount));
+        std::string first_discount = calculate_first_discount(price,map_it);
+        price = std::to_string(std::stof(price) - std::stof(first_discount));
+        std::string order_discount = calculate_order_discount(price, map_it);
+        price = std::to_string(std::stof(price) - std::stof(order_discount));
+        respond += order_discount+item_discount+first_discount;
+        respond += "Total Discount: "+std::to_string(std::stof(order_discount)+std::stof(item_discount)+std::stof(first_discount))+"\n";
+        respond += "Total Price: ";
+        if (std::stof(price) < 0)
+        {
+            rest_res->discount_price = 0;
+            user_res->discount_price = 0;
+            respond += "0\n";
+        }    
+        else
+        {
+            rest_res->discount_price = std::stof(price);
+            user_res->discount_price = std::stof(price);
+            respond += price+"\n"; 
+        }    
+
     }
     else
+    {
+        rest_res->raw_price = 0;
+        user_res->raw_price = 0;
+        rest_res->discount_price = 0;
+        user_res->discount_price = 0;
         respond += "0\n";
+    }   
+    if (current_user->wallet < rest_res->discount_price)
+        throw errors(error_message::BAD_REQUEST);
+    else
+        current_user->wallet -= rest_res->discount_price;     
     return respond;    
 }
 
 std::string software::reserve(std::vector<std::string> &command_entered)
 {
     std::map<std::string, resturan*>::iterator map_it;
-    std::map<std::string, std::pair<int, int>> foods;
+    std::map<std::string, std::pair<float, int>> foods;
     map_it = find_if((*all_resturans).begin(), (*all_resturans).end(), [command_entered](std::pair<std::string, resturan*> a){return a.first==command_entered[2];});
     if (map_it == (*all_resturans).end())
         throw errors(error_message::NOT_FOUND);
@@ -362,10 +440,10 @@ std::string software::reserve(std::vector<std::string> &command_entered)
     if (command_entered.size() == 7)
     {
         foods = parse_foods(command_entered[6]);
-        std::map<std::string, std::pair<int, specific_food_discount*>>::iterator menu_it;
+        std::map<std::string, std::pair<float, specific_food_discount*>>::iterator menu_it;
         for (auto i : foods)
         {
-            menu_it = find_if(map_it->second->menu.begin(), map_it->second->menu.end(), [i](std::pair<std::string, std::pair<int, specific_food_discount*>> a){return a.first==i.first;});
+            menu_it = find_if(map_it->second->menu.begin(), map_it->second->menu.end(), [i](std::pair<std::string, std::pair<float, specific_food_discount*>> a){return a.first==i.first;});
             if (menu_it == map_it->second->menu.end())   
                 throw errors(error_message::NOT_FOUND);
             else
@@ -400,6 +478,6 @@ std::string software::reserve(std::vector<std::string> &command_entered)
 
 std::string software::increase_budget(std::vector<std::string> &command_entered)
 {
-    current_user->wallet += std::stoi(command_entered[2]);
+    current_user->wallet += std::stof(command_entered[2]);
     return OK;
 }

@@ -23,7 +23,7 @@ void resturan::set_menu (std::string raw_menu)
     for (auto i : tokens)
     {
         size_t pos = i.find(":");
-        menu[i.substr(0, pos)].first = std::stoi(i.substr(pos+1));
+        menu[i.substr(0, pos)].first = std::stof(i.substr(pos+1));
     }
 }
 

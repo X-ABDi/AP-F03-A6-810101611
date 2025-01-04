@@ -65,4 +65,10 @@ namespace sub_command_delete{
     const std::string RESERVE_ID = "reserve_id";
 }
 
+namespace discount_type{
+    const std::string PERCENT = "percent";
+    const std::string AMOUNT = "amount";
+    const float RETURN_PERCENT = float(3)/5;
+}
+
 #endif

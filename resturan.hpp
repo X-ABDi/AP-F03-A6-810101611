@@ -15,7 +15,7 @@ struct table{
 
 class resturan{
     std::string name;
-    std::map<std::string, std::pair<int, specific_food_discount*>> menu;
+    std::map<std::string, std::pair<float, specific_food_discount*>> menu;
     std::string district;
     bool food_discount;
     total_price_discount total_dis;

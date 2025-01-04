@@ -7,25 +7,28 @@ class discount
 {
     protected: 
         std::string type;
-        int value;
+        float value;
         virtual void set_properties (std::string, std::string, std::string)=0;
-        friend class resturan;    
+        friend class resturan; 
+        friend class software;   
 };
 
 class total_price_discount : protected discount
 {
     private:
-        int minimum_total;
+        float minimum_total;
     public:
         void set_properties(std::string, std::string, std::string);    
     friend class resturan;
+    friend class software;
 };
 
 class first_order_discount : protected discount
 {
     public:
         void set_properties(std::string, std::string, std::string);
-    friend class resturan;    
+    friend class resturan; 
+    friend class software;   
 };
 
 class specific_food_discount : protected discount
@@ -35,7 +38,8 @@ class specific_food_discount : protected discount
     public:
         void set_properties(std::string, std::string, std::string);
         std::string get_food_name();
-    friend class resturan;    
+    friend class resturan; 
+    friend class software;   
 };
 
 #endif
