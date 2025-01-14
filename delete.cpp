@@ -1,5 +1,8 @@
 #include "delete.hpp"
 
+Delete::Delete(process &process_obj) : process (process_obj)
+{}
+
 std::string Delete::pro_delete (std::vector<std::string> &command_entered)
 {
     if (!UTaste.logged_in())

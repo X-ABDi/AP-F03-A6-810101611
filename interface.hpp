@@ -1,6 +1,8 @@
+#ifndef __INTERFACE__
+#define __INTERFACE__
+
 #include "global.hpp"
 #include "error.hpp"
-#include "input.hpp"
 #include "output.hpp"
 #include "process.hpp"
 #include "put.hpp"
@@ -10,11 +12,18 @@
 
 class interface
 {
-    input request;
     process general_methods;
+    Post post_object;
+    Get get_object;
+    Put put_object;
+    Delete delete_object;
     public:
-        void init (char *argv[]);
+        interface();
+        void initi (char *argv[]);
         void run ();
         void restaurant_init(char *resturan_file);
         void district_init(char *restrict_file);
+        void discount_init(char *discount_file);
 };
+
+#endif

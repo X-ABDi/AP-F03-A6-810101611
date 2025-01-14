@@ -7,6 +7,8 @@
 class process
 {
     public:
+    process();
+    process(process &process_obj);
     void resturan_init (char *);
     void district_init (char *);
     void discount_init (char *);

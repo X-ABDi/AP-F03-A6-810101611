@@ -7,6 +7,7 @@
 class Get : protected process
 {
     public:
+        Get(process &process_obj);
         std::string pro_get (std::vector<std::string> &command_entered);
         std::string pro_get_districts(std::vector<std::string> &command_entered);
         std::string pro_get_resturans(std::vector<std::string> &command_entered);

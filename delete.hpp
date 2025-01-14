@@ -7,6 +7,7 @@
 class Delete : protected process
 {
     public:
+        Delete(process &process_obj);
         std::string pro_delete (std::vector<std::string> &command_entered);
         std::string pro_delete_reserve (std::vector<std::string> &command_entered);
 };

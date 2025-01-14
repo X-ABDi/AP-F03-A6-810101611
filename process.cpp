@@ -2,6 +2,13 @@
 #include <regex>
 #include "process.hpp"
 
+process::process(process &process_obj)
+{
+    UTaste = process_obj.UTaste;
+}
+
+process::process() {}
+
 std::vector<std::string> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
 std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES, sub_command_get::SHOW_BUDGET};
 std::vector<std::string> process::sub_comma_put = {sub_command_put::MY_DISTRICT};
@@ -167,7 +174,6 @@ void process::parse_sub_put(std::vector<std::string> &command_entered, std::stri
 
 void process::parse_post_signup (std::vector<std::string> &command_entered, std::stringstream &ss)
 {
-    std::cout << "parse post signup" << std::endl;
     std::string input;
     ss >> input;
     if (input != sub_command_post::USERNAME)
@@ -175,7 +181,6 @@ void process::parse_post_signup (std::vector<std::string> &command_entered, std:
     ss >> input;
     if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
-    std::cout << "it might be for substr" << std::endl;    
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
     ss >> input;
@@ -184,10 +189,8 @@ void process::parse_post_signup (std::vector<std::string> &command_entered, std:
     ss >> input;
     if (double_qoute_error(input))
         throw errors(error_message::BAD_REQUEST);
-    std::cout << "it might be for substr" << std::endl;    
     input = input.substr(1, input.length()-2);    
     command_entered.push_back(input);
-    std::cout << "signup parsed successfully" << std::endl;
 }
 
 void process::parse_post_login (std::vector<std::string> &command_entered, std::stringstream &ss)
@@ -283,16 +286,14 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
 {
     std::string input;
     ss >> input;
-    std::cout << input << std::endl;
     if (find(sub_comma_post.begin(), sub_comma_post.end(), input) == sub_comma_post.end())
+        throw errors(error_message::BAD_REQUEST);    
+    command_entered.push_back(input);  
+    std::cout << "pushed back sub command to vector: " << command_entered[1] << std::endl;  
+    ss >> input;  
+    if (input != "?")  
         throw errors(error_message::BAD_REQUEST);
-        std::cout << "not parse sub post" << std::endl;
-    command_entered.push_back(input);    
-    ss >> input;    
-    if (input != "?" )
-        throw errors(error_message::BAD_REQUEST);
-    std::cout << "not ? sign" << std::endl; 
-    std::cout << command_entered[1] << std::endl;   
+    std::cout << "checking command vector[1]" <<std::endl;    
     if (command_entered[1] == sub_command_post::LOGOUT)
         return;
     else if (command_entered[1] == sub_command_post::SIGNUP)
@@ -359,12 +360,11 @@ void process::parse_command(std::vector<std::string> &command_entered, std::stri
     std::stringstream ss = std::stringstream();
     ss << input;
     ss >> input;
-    std::cout << input << std::endl;
-    for (auto i : main_commands)
-        std::cout << i << std::endl;
+    // std::cout << input << std::endl;
+    // for (auto i : main_commands)
+    //     std::cout << i << std::endl;
     if(find(main_commands.begin(), main_commands.end(), input) == main_commands.end())
         throw errors(error_message::BAD_REQUEST);
-    std::cout << "not the main command" << std::endl;    
     command_entered.push_back(input);
     parse_sub_command(command_entered, ss);
 }

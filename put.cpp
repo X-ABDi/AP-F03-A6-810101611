@@ -1,5 +1,8 @@
 #include "put.hpp"
 
+Put::Put(process &process_obj) : process(process_obj)
+{}
+
 std::string Put::pro_put (std::vector<std::string> &command_entered)
 {
     if (!UTaste.logged_in())

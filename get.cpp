@@ -1,5 +1,10 @@
 #include "get.hpp"
 
+Get::Get(process &process_obj) : process(process_obj)
+{
+
+}
+
 std::string Get::pro_get (std::vector<std::string> &command_entered)
 {
     std::string respond;
