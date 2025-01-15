@@ -7,10 +7,10 @@ OBJS = $(SRCS:.cpp=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(STD) -o $(TARGET) $(OBJS)
+	$(CC) $(STD) -g -o $(TARGET) $(OBJS)
 
 %.o: %.cpp	
 	$(CC) $(STD) -c $< -o $@
 
 clean:	
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJS) 

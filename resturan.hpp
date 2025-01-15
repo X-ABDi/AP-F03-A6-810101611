@@ -33,7 +33,7 @@ class resturan{
     void set_first_dis (std::string);
     void set_food_dis (std::string);
     void put_in_menu (specific_food_discount*);
-    std::string get_discounts_detail();
+    void get_discounts_detail(std::string &);
 
     friend class software;
     friend class district;

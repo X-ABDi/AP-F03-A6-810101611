@@ -41,7 +41,7 @@ void resturan::set_total_dis(std::string total_dis_prop)
 {
     if (total_dis_prop == NONE)
     {
-        std::cout << "total discount success" << std::endl;
+        // std::cout << "total discount success" << std::endl;
         return;
     }
     std::stringstream ss = std::stringstream();
@@ -53,14 +53,14 @@ void resturan::set_total_dis(std::string total_dis_prop)
     std::string value;
     getline(ss, value, ';');
     total_dis.set_properties(type, minimum, value);
-    std::cout << "total discount success" << std::endl;
+    // std::cout << "total discount success" << std::endl;
 }
 
 void resturan::set_first_dis (std::string first_dis_prop)
 {
     if (first_dis_prop == NONE)
     {
-        std::cout << "first discount success" << std::endl;
+        // std::cout << "first discount success" << std::endl;
         return;
     }    
     std::stringstream ss = std::stringstream();
@@ -70,7 +70,7 @@ void resturan::set_first_dis (std::string first_dis_prop)
     std::string value;
     getline(ss, value, ';');
     first_dis.set_properties(type, value, "");
-    std::cout << "first discount success" << std::endl;
+    // std::cout << "first discount success" << std::endl;
 }
 
 std::vector<std::string> parse_food_discount (std::string food_dis_prop)
@@ -98,7 +98,7 @@ void resturan::set_food_dis (std::string food_dis_prop)
     if (food_dis_prop == NONE)
     {    
         food_discount = false;
-        std::cout << "food dis success" <<std::endl;
+        // std::cout << "food dis success" <<std::endl;
         return;
     }
     food_discount = true;
@@ -118,12 +118,11 @@ void resturan::set_food_dis (std::string food_dis_prop)
         new_food_dis->set_properties(type, food_name, value);
         put_in_menu(new_food_dis);
     }
-    std::cout << "food dis success" <<std::endl;
+    // std::cout << "food dis success" <<std::endl;
 }
 
-std::string resturan::get_discounts_detail()
+void resturan::get_discounts_detail(std::string &respond)
 {
-    std::string respond = "";
     if (total_dis.type != "")
     {
         respond += "Order Amount Discount: "+total_dis.type+", "+std::to_string(total_dis.minimum_total)+", "+std::to_string(total_dis.value)+"\n";
@@ -145,5 +144,4 @@ std::string resturan::get_discounts_detail()
     {
         respond += "First Order Discount: "+first_dis.type+", "+std::to_string(first_dis.value)+"\n";
     }
-    return respond;
 }

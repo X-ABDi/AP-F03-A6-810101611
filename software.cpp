@@ -21,14 +21,14 @@ bool software::logged_in()
     return current_user->logged_in;
 }
 
-std::string software::get_budget()
+void software::get_budget(std::string &respond)
 {
     if (logged_in() == false)
         throw errors(error_message::PERMISSION_DENIED);
-    return std::to_string(current_user->wallet);    
+    respond = std::to_string(current_user->wallet);    
 }
 
-void software::resturan_init (std::vector<std::string> rest_prop)
+void software::resturan_init (std::vector<std::string> &rest_prop)
 {
     // for (auto i : rest_prop)
     //     std::cout << i << std::endl;
@@ -43,13 +43,13 @@ void software::resturan_init (std::vector<std::string> rest_prop)
     (*all_resturans)[new_resturan->name] = new_resturan; 
 }
 
-void software::district_init (std::vector<std::string> dist_prop)
+void software::district_init (std::vector<std::string> &dist_prop)
 {
     district *new_district = new district;
     new_district->set_neighbors(dist_prop);
 }
 
-void software::discount_init (std::vector<std::string> disc_prop)
+void software::discount_init (std::vector<std::string> &disc_prop)
 {
     (*all_resturans)[disc_prop[0]]->set_total_dis(disc_prop[1]);
     (*all_resturans)[disc_prop[0]]->set_first_dis(disc_prop[2]);
@@ -76,56 +76,46 @@ void software::delete_reserve (std::vector<std::string> &command_entered)
     (*current_user->reserves).erase(command_entered[3]); 
 }
 
-std::string software::get_district(std::string district_name)
+void software::get_district(std::string_view district_name, std::string &respond)
 {
-    std::string respond;
-    respond = districts.get_district(district_name);
-    return respond;
+    districts.get_district(district_name, respond);
 }
 
-std::string software::get_all_districts()
+void software::get_all_districts(std::string &respond)
 {
-    std::string respond;
     if (districts.district_neighbors.size() == 0)
         throw errors(error_message::EMPTY);
-    respond = districts.get_all_districts();  
-    return respond;
+    districts.get_all_districts(respond);  
 }
 
-std::string software::get_resturans(std::string food_name)
+void software::get_resturans(std::string food_name, std::string &respond)
 {
-    std::string respond;
     if (current_user->district == "")
         throw errors(error_message::NOT_FOUND);
     if ((*all_resturans).size() == 0)
         throw errors(error_message::EMPTY);
-    std::string user_district = current_user->district;    
-    respond = districts.get_resturans(user_district, food_name);  
+    std::string_view user_district = current_user->district;    
+    districts.get_resturans(user_district, food_name, respond);  
     if (respond == "")
         throw errors(error_message::EMPTY);
-    return respond;    
 }
 
-std::vector<std::pair<std::string,rest_reserve*>> software::sort_reserves_by_times(resturan* my_resturan, std::pair<std::string, table *> i)
+void software::sort_reserves_by_times(resturan* my_resturan, std::pair<std::string, table *> &i, std::vector<std::pair<std::string,rest_reserve*>> &reserves)
 {
-    std::vector<std::pair<std::string,rest_reserve*>> reserves;
-
     for (auto j : i.second->reseve_ids)
     {
         reserves.push_back((*my_resturan->reserves.find(j)));
     }
     sort(reserves.begin(), reserves.end(), [](std::pair<std::string, rest_reserve*> a, std::pair<std::string, rest_reserve*> b){return a.second->time_interval.first < b.second->time_interval.first;});
-    return reserves;
 }
 
-std::string software::resturan_detail_tables(std::string resturan_name)
+void software::resturan_detail_tables(std::string resturan_name, std::string &respond)
 {
-    std::string respond;
     std::vector<std::pair<std::string,rest_reserve*>> sorted_reserves;
     for (std::pair<std::string, table *> i : (*all_resturans)[resturan_name]->tables)
     {
         respond += i.first+": ";
-        sorted_reserves = sort_reserves_by_times((*all_resturans)[resturan_name], i);
+        sort_reserves_by_times((*all_resturans)[resturan_name], i, sorted_reserves);
         for (auto j : sorted_reserves)
         {
             respond += "("+std::to_string(j.second->time_interval.first)+'-'+std::to_string(j.second->time_interval.second)+"), ";   
@@ -133,21 +123,17 @@ std::string software::resturan_detail_tables(std::string resturan_name)
         respond = respond.substr(0, respond.length()-2);
         respond += "\n";
     }
-    return respond;
 }
 
-std::string software::resturan_detail_discounts(std::string resturan_name)
+void software::resturan_detail_discounts(std::string resturan_name, std::string &respond)
 {
-    std::string respond;
-    respond = (*all_resturans)[resturan_name]->get_discounts_detail();
-    return respond;
+    (*all_resturans)[resturan_name]->get_discounts_detail(respond);
 }
 
-std::string software::get_resturan_detail(std::string resturan_name)
+void software::get_resturan_detail(std::string resturan_name, std::string &respond)
 {
     if ((*all_resturans).count(resturan_name) == 0)
         throw errors(error_message::NOT_FOUND);
-    std::string respond = "";
     respond += "Name: "+(*all_resturans)[resturan_name]->name+"\n";
     respond += "District: "+(*all_resturans)[resturan_name]->district+"\n";
     respond += "Time: "+(*all_resturans)[resturan_name]->working_time.first+'-'+(*all_resturans)[resturan_name]->working_time.second+"\n";
@@ -156,14 +142,12 @@ std::string software::get_resturan_detail(std::string resturan_name)
         respond += i.first+"("+std::to_string(i.second.first)+"), ";
     respond = respond.substr(0, respond.length()-2);
     respond += "\n";
-    respond += resturan_detail_tables(resturan_name);
-    respond += resturan_detail_discounts(resturan_name);
-    return respond;
+    resturan_detail_tables(resturan_name, respond);
+    resturan_detail_discounts(resturan_name, respond);
 }
 
-std::string software::get_all_reserves()
+void software::get_all_reserves(std::string &respond)
 {
-    std::string respond = "";
     for (auto i : (*current_user->reserves))
     {
         respond += i.second->reserve_id+": ";
@@ -178,12 +162,10 @@ std::string software::get_all_reserves()
         }
         respond += "\n";
     }
-    return respond;
 }
 
-std::string software::get_resturan_reserves(std::vector<std::string> &command_entered)
+void software::get_resturan_reserves(std::vector<std::string> &command_entered, std::string &respond)
 {
-    std::string respond="";
     if (find_if((*current_user->reserves).begin(), (*current_user->reserves).end(), [command_entered](std::pair<std::string, user_reserve*> a){return a.second->resturan_name == command_entered[2];}) == (*current_user->reserves).end())
         throw errors(error_message::EMPTY);
     for (auto i : (*current_user->reserves))
@@ -203,12 +185,10 @@ std::string software::get_resturan_reserves(std::vector<std::string> &command_en
             respond += "\n";
         }
     }
-    return respond;
 }
 
-std::string software::get_resturan_one_reserve(std::vector<std::string> &command_entered)
+void software::get_resturan_one_reserve(std::vector<std::string> &command_entered, std::string &respond)
 {
-    std::string respond="";
     if ((*all_resturans).count(command_entered[2]) == 0)
         throw errors(error_message::NOT_FOUND);
     if ((*all_resturans)[command_entered[2]]->reserves.count(command_entered[3]) == 0)
@@ -228,22 +208,19 @@ std::string software::get_resturan_one_reserve(std::vector<std::string> &command
         respond += " ";
         respond += (*all_resturans)[command_entered[2]]->reserves[command_entered[3]]->discount_price;    
     }   
-    respond += "\n";        
-    return respond;
+    respond += "\n";
 }
 
-std::string software::get_reserves(std::vector<std::string> &command_entered)
+void software::get_reserves(std::vector<std::string> &command_entered, std::string &respond)
 {
-    std::string respond;
     if ((*current_user->reserves).empty())
         throw errors(error_message::EMPTY);
     if (command_entered.size() == 2)
-        respond = get_all_reserves();
+        get_all_reserves(respond);
     if (command_entered.size() == 3)
-        respond = get_resturan_reserves(command_entered); 
+        get_resturan_reserves(command_entered, respond); 
     if (command_entered.size() == 4)
-        respond = get_resturan_one_reserve(command_entered);
-    return respond;           
+        get_resturan_one_reserve(command_entered, respond);          
 }
 
 void software::signup(std::vector<std::string> &command_entered)
@@ -296,9 +273,8 @@ void software::logout()
     current_user->logged_in = false;    
 }
 
-std::map<std::string, std::pair<float, int>> parse_foods(std::string foods)
+void parse_foods(std::string foods, std::map<std::string, std::pair<float, int>> &food_vec)
 {
-    std::map<std::string, std::pair<float, int>> food_vec;
     std::stringstream ss = std::stringstream();
     ss << foods;
     while (ss.good())
@@ -309,7 +285,6 @@ std::map<std::string, std::pair<float, int>> parse_foods(std::string foods)
         else
             food_vec[foods].second += 1;    
     }
-    return food_vec;
 }
 
 std::string calculate_price (std::map<std::string, std::pair<float, int>> &foods)
@@ -363,7 +338,7 @@ std::string software::calculate_order_discount (std::string price, std::map<std:
     return respond;            
 }
 
-std::string software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it)
+void software::set_reserve(std::vector<std::string> &command_entered, std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it, std::string &respond)
 {
     rest_reserve* rest_res = new rest_reserve;
     user_reserve* user_res = new user_reserve;
@@ -390,7 +365,6 @@ std::string software::set_reserve(std::vector<std::string> &command_entered, std
     }
     (*current_user->reserves)[std::to_string(res_id)] = user_res;
     (*all_resturans)[map_it->first]->reserves[std::to_string(res_id)] = rest_res;
-    std::string respond = "";
     respond += "Reserve ID: "+std::to_string(res_id)+"\n";
     respond += "Table "+command_entered[3]+" for "+command_entered[4]+" to "+command_entered[5];
     respond += " in "+command_entered[2]+"\n";
@@ -435,11 +409,10 @@ std::string software::set_reserve(std::vector<std::string> &command_entered, std
     if (current_user->wallet < rest_res->discount_price)
         throw errors(error_message::BAD_REQUEST);
     else
-        current_user->wallet -= rest_res->discount_price;     
-    return respond;    
+        current_user->wallet -= rest_res->discount_price;
 }
 
-std::string software::reserve(std::vector<std::string> &command_entered)
+void software::reserve(std::vector<std::string> &command_entered, std::string &respond)
 {
     std::map<std::string, resturan*>::iterator map_it;
     std::map<std::string, std::pair<float, int>> foods;
@@ -450,7 +423,7 @@ std::string software::reserve(std::vector<std::string> &command_entered)
         throw errors(error_message::NOT_FOUND);
     if (command_entered.size() == 7)
     {
-        foods = parse_foods(command_entered[6]);
+        parse_foods(command_entered[6], foods);
         std::map<std::string, std::pair<float, specific_food_discount*>>::iterator menu_it;
         for (auto i : foods)
         {
@@ -483,12 +456,11 @@ std::string software::reserve(std::vector<std::string> &command_entered)
     if (stoi(map_it->second->working_time.first) > stoi(command_entered[5]) || stoi(map_it->second->working_time.second) < stoi(command_entered[5]))
         throw errors(error_message::PERMISSION_DENIED); 
     std::string respond;
-    respond = set_reserve(command_entered, foods, map_it);
-    return respond;  
+    set_reserve(command_entered, foods, map_it, respond); 
 }
 
-std::string software::increase_budget(std::vector<std::string> &command_entered)
+void software::increase_budget(std::vector<std::string> &command_entered, std::string &respond)
 {
     current_user->wallet += std::stof(command_entered[2]);
-    return OK;
+    respond = OK;
 }
