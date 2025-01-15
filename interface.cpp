@@ -1,6 +1,6 @@
 #include "interface.hpp"
 
-interface::interface() : post_object(general_methods), get_object(general_methods)
+interface::interface() : general_methods(), post_object(general_methods), get_object(general_methods)
                        , put_object(general_methods), delete_object(general_methods)  
 {
 

@@ -2,12 +2,17 @@
 #include <regex>
 #include "process.hpp"
 
-process::process(process &process_obj)
+process::process(process &process_obj) 
 {
+    std::cout << "process constructor with argument" << std::endl;
     UTaste = process_obj.UTaste;
 }
 
-process::process() {}
+process::process() : UTaste(std::make_shared<software>())
+{
+    std::cout << "process constructor without argument" << std::endl;
+    std::cout << UTaste->current_user->get_wallet() << std::endl;
+}
 
 std::vector<std::string> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
 std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES, sub_command_get::SHOW_BUDGET};
@@ -381,7 +386,7 @@ void process::resturan_init (char *resturan_file)
     while(getline(properties, line))
     {
         rest_prop = parse_line (line);
-        UTaste.resturan_init (rest_prop);
+        UTaste->resturan_init (rest_prop);
     }
     properties.close();
 }
@@ -405,7 +410,7 @@ void process::district_init (char *restrict_file)
             rest_prop.erase(rest_prop.begin()+1);
             rest_prop.insert(rest_prop.end(), neighbors.begin(), neighbors.end());
         }
-        UTaste.district_init (rest_prop);
+        UTaste->district_init (rest_prop);
     }
     properties.close();
 }
@@ -420,7 +425,7 @@ void process::discount_init (char *discount_file)
     while(getline(properties, line))
     {
         discount_info = parse_line(line);
-        UTaste.discount_init(discount_info);
+        UTaste->discount_init(discount_info);
     }
     properties.close();
 }

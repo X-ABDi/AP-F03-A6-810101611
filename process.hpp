@@ -14,7 +14,7 @@ class process
     void discount_init (char *);
     void begin(std::vector<std::string> &command_entered);
     protected:
-    software UTaste;
+    std::shared_ptr<software> UTaste;
     private:
     static std::vector<std::string> main_commands;
     static std::vector<std::string> sub_comma_get;

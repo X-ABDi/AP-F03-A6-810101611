@@ -1,19 +1,19 @@
 #include "software.hpp"
 
-software::software()
+software::software() : current_user(std::make_shared<user>()), all_resturans(std::make_shared<std::map<std::string, resturan*>>()),
+                        all_users(std::make_shared<std::map<std::string, std::shared_ptr<user>>>())
 {
-    std::cout << "software cinstructor: " ;
-    all_resturans = new std::map<std::string, resturan*>;
-    all_users = new std::map<std::string, user*>;
-    user* current_user = new user("admin", "admin");
-    current_user->logged_in = false;
+    std::cout << "software constructor: " ;
     std::cout << current_user->logged_in << std::endl;
+}
+
+software::software(std::shared_ptr<software> soft_obj) 
+{
+    
 }
 
 software::~software()
 {
-    delete all_resturans;
-    delete all_users;
 }
 
 bool software::logged_in()
@@ -248,8 +248,8 @@ std::string software::get_reserves(std::vector<std::string> &command_entered)
 
 void software::signup(std::vector<std::string> &command_entered)
 {
-    std::map<std::string, user*>::iterator map_it;
-    map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.first == command_entered[2];});
+    std::map<std::string, std::shared_ptr<user>>::iterator map_it;
+    map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, std::shared_ptr<user>> a){return a.first == command_entered[2];});
     if (map_it != (*all_users).end())
     {
         if (map_it->second->password != command_entered[3])
@@ -267,7 +267,7 @@ void software::signup(std::vector<std::string> &command_entered)
     }           
     else
     {
-        user* new_user = new user(command_entered[2], command_entered[3]);
+        std::shared_ptr<user> new_user = std::make_shared<user>(command_entered[2], command_entered[3]);
         (*all_users).insert({command_entered[2], new_user});
         current_user = new_user;
         current_user->logged_in = true;
@@ -276,10 +276,10 @@ void software::signup(std::vector<std::string> &command_entered)
 
 void software::login(std::vector<std::string> &command_entered)
 {
-    if (find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.second->username==command_entered[2];}) == (*all_users).end())
+    if (find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, std::shared_ptr<user>> a){return a.second->username==command_entered[2];}) == (*all_users).end())
         throw errors(error_message::NOT_FOUND);
-    std::map<std::string, user*>::iterator map_it;
-    map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, user*> a){return a.second->username==command_entered[2];});
+    std::map<std::string, std::shared_ptr<user>>::iterator map_it;
+    map_it = find_if((*all_users).begin(), (*all_users).end(), [command_entered](std::pair<std::string, std::shared_ptr<user>> a){return a.second->username==command_entered[2];});
     if ((*map_it).second->password != command_entered[3])
         throw errors(error_message::PERMISSION_DENIED);
     if (current_user->logged_in == true)
@@ -290,8 +290,9 @@ void software::login(std::vector<std::string> &command_entered)
 
 void software::logout()
 {
-    if (current_user->logged_in == false)
-        throw errors(error_message::PERMISSION_DENIED);
+    std::cout << "in software logout" << std::endl;
+    // if (current_user->logged_in == false)
+    //     throw errors(error_message::PERMISSION_DENIED);
     current_user->logged_in = false;    
 }
 

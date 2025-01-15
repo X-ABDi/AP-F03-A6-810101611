@@ -15,6 +15,7 @@ class user{
         user(std::string, std::string);
         user();
         ~user();
+        float get_wallet();
     friend class software;    
 };
 

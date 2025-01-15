@@ -12,12 +12,13 @@
 
 class software
 {
-    std::map<std::string, user*>* all_users;
-    std::map<std::string, resturan*>* all_resturans;
+    std::shared_ptr<std::map<std::string, std::shared_ptr<user>>> all_users;
+    std::shared_ptr<std::map<std::string, resturan*>> all_resturans;
     district districts;
-    user* current_user;
+    std::shared_ptr<user> current_user;
     public:
     software();
+    software(std::shared_ptr<software> soft_obj);
     ~software();
     bool logged_in ();
     void set_district (std::string);
