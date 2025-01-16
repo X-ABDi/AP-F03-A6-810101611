@@ -13,7 +13,7 @@
 class software
 {
     std::shared_ptr<std::map<std::string, std::shared_ptr<user>>> all_users;
-    std::shared_ptr<std::map<std::string, resturan*>> all_resturans;
+    std::shared_ptr<std::map<std::string, std::shared_ptr<resturan>>> all_resturans;
     district districts;
     std::shared_ptr<user> current_user;
     public:
@@ -23,7 +23,7 @@ class software
     bool logged_in ();
     void set_district (std::string);
     void delete_reserve (std::vector<std::string> &command_entered);
-    void sort_reserves_by_times(resturan*, std::pair<std::string, table *>&, std::vector<std::pair<std::string,rest_reserve*>>&);
+    void sort_reserves_by_times(std::shared_ptr<resturan>, std::pair<std::string, table *>&, std::vector<std::pair<std::string,rest_reserve*>>&);
     void get_budget(std::string &respond);
     void resturan_detail_tables(std::string resturan_name, std::string &respond);
     void resturan_detail_discounts(std::string resturan_name, std::string &respond);
@@ -39,10 +39,10 @@ class software
     void login(std::vector<std::string> &command_entered);
     void logout();
     void reserve(std::vector<std::string> &command_entered, std::string &respond);
-    void set_reserve(std::vector<std::string> &command_entered,std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it, std::string &respond);
-    std::string calculate_specific_discounts (std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, resturan*>::iterator &map_it);
-    std::string calculate_first_discount (std::string price, std::map<std::string, resturan*>::iterator &map_it);
-    std::string calculate_order_discount (std::string price, std::map<std::string, resturan*>::iterator &map_it);
+    void set_reserve(std::vector<std::string> &command_entered,std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, std::shared_ptr<resturan>>::iterator &map_it, std::string &respond);
+    std::string calculate_specific_discounts (std::map<std::string, std::pair<float, int>> &foods, std::map<std::string, std::shared_ptr<resturan>>::iterator &map_it);
+    std::string calculate_first_discount (std::string price, std::map<std::string, std::shared_ptr<resturan>>::iterator &map_it);
+    std::string calculate_order_discount (std::string price, std::map<std::string, std::shared_ptr<resturan>>::iterator &map_it);
     void increase_budget(std::vector<std::string> &command_entered, std::string &respond);
     void resturan_init (std::vector<std::string>&);
     void district_init (std::vector<std::string>&);

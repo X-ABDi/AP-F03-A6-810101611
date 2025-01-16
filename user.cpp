@@ -17,9 +17,7 @@ user::user() : reserves(new std::map<std::string, user_reserve*>), district(""),
 user::~user()
 {
     for (auto i : *reserves)
-    {
         delete i.second;
-    }
     delete reserves;
 }
 

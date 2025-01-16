@@ -8,13 +8,13 @@
 
 class district
 {
-    std::map<std::string, std::vector<std::string>*> district_neighbors;
-    std::map<std::string, std::vector<resturan*>*> district_resturans;
+    std::map<std::string, std::vector<std::string>*>* district_neighbors;
+    std::map<std::string, std::vector<std::shared_ptr<resturan>>*>* district_resturans;
     public:
         district();
         ~district();
         void set_neighbors (std::vector<std::string> properties);
-        void set_resturans (std::string district, resturan* new_resturan);
+        void set_resturans (std::string district, std::shared_ptr<resturan> new_resturan);
         bool user_district_check (std::string);
         void get_district(std::string_view district_name, std::string &respond);
         void get_all_districts(std::string &respond);

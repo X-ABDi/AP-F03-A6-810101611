@@ -11,7 +11,7 @@ process::process(process &process_obj)
 process::process() : UTaste(std::make_shared<software>())
 {
     // std::cout << "process constructor without argument" << std::endl;
-    std::cout << UTaste->current_user->get_wallet() << std::endl;
+    // std::cout << UTaste->current_user->get_wallet() << std::endl;
 }
 
 std::vector<std::string_view> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
