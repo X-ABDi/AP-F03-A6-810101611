@@ -53,12 +53,12 @@ void district::get_district(std::string_view district_name, std::string &respond
     map_it = district_neighbors.find(std::string(district_name));
     if (map_it == district_neighbors.end())
     respond += map_it->first;
-    respond += ": ";
+    respond += output_common::COLON;
     for (auto i : (*map_it->second))
     {
         respond += i;
         if (i != (*map_it->second).back())
-            respond += ", ";
+            respond += output_common::COMMA;
     }
 }
 
@@ -68,14 +68,14 @@ void district::get_all_districts(std::string &respond)
     for (map_it = district_neighbors.begin(); map_it != district_neighbors.end(); map_it++)
     {
         respond += map_it->first;
-        respond += ": ";
+        respond += output_common::COLON;
         for (auto i : (*map_it->second))
         {
             respond += i;
             if (i != (*map_it->second).back())
-                respond += ", ";
+                respond += output_common::COMMA;
         }
-        respond += "\n";
+        respond += output_common::NEW_LINE;
     }
 }
 
@@ -108,7 +108,7 @@ void district::split_resturan_request(std::string &food_name, std::queue<std::pa
     {
         dis_pair = my_q.front();
         my_q.pop();
-        if (food_name == "")
+        if (food_name == EMPTY_STRING)
             get_resturans_by_food(respond, dis_pair, food_name);
         else
             get_all_resturans(respond, dis_pair);    
@@ -131,9 +131,11 @@ void district::get_resturans_by_food(std::string &respond, std::pair<std::string
         if (i->menu.count(food_name))
         {
             respond += i->name;
-            respond += " (";
+            respond += output_common::SPACE;
+            respond += output_common::PARANTHESE_OPEN;
             respond += i->district;
-            respond += ")\n";
+            respond += output_common::PARANTHESE_CLOSE;
+            respond += output_common::NEW_LINE;
         }
     }
 }
@@ -143,8 +145,10 @@ void district::get_all_resturans(std::string &respond, std::pair<std::string, st
     for (auto i : (*district_resturans[dis_pair.first]))
     {
         respond += i->name;
-        respond += " (";
+        respond += output_common::SPACE;
+        respond += output_common::PARANTHESE_OPEN;
         respond += i->district;
-        respond += ")\n";
+        respond += output_common::PARANTHESE_CLOSE;
+        respond += output_common::NEW_LINE;
     }
 }

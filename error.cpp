@@ -1,6 +1,6 @@
 #include "error.hpp"
 
-errors::errors(const std::string msg)
+errors::errors(const std::string_view msg)
 {
     message = msg;
 }

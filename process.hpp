@@ -16,11 +16,11 @@ class process
     protected:
     std::shared_ptr<software> UTaste;
     private:
-    static std::vector<std::string> main_commands;
-    static std::vector<std::string> sub_comma_get;
-    static std::vector<std::string> sub_comma_put;
-    static std::vector<std::string> sub_comma_post;
-    static std::vector<std::string> sub_comma_delete;
+    static std::vector<std::string_view> main_commands;
+    static std::vector<std::string_view> sub_comma_get;
+    static std::vector<std::string_view> sub_comma_put;
+    static std::vector<std::string_view> sub_comma_post;
+    static std::vector<std::string_view> sub_comma_delete;
     static std::vector<std::string> parse_line(std::string line);
     static std::vector<std::string> parse_neighbor(std::string nghbrs);
     static void parse_command(std::vector<std::string> &command_entered, std::string input); 

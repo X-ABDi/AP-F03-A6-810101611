@@ -2,7 +2,7 @@
 
 Get::Get(process &process_obj) : process(process_obj)
 {
-    std::cout << "get constructor" << std::endl;
+    // std::cout << "get constructor" << std::endl;
 }
 
 std::string Get::pro_get (std::vector<std::string> &command_entered)
@@ -36,7 +36,7 @@ void Get::pro_get_resturans(std::vector<std::string> &command_entered, std::stri
     if (command_entered.size() == 3)
         UTaste->get_resturans(command_entered[2], respond); 
     else if (command_entered.size() == 2)
-        UTaste->get_resturans("", respond);    
+        UTaste->get_resturans(EMPTY_STRING, respond);    
 }
 
 void Get::pro_get_restdetail(std::vector<std::string> &command_entered, std::string &respond)

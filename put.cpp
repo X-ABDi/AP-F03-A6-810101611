@@ -2,7 +2,7 @@
 
 Put::Put(process &process_obj) : process(process_obj)
 {
-    std::cout << "put constructor" << std::endl;
+    // std::cout << "put constructor" << std::endl;
 }
 
 std::string Put::pro_put (std::vector<std::string> &command_entered)
@@ -18,5 +18,5 @@ std::string Put::pro_put (std::vector<std::string> &command_entered)
 void Put::pro_put_district(std::string district_name, std::string &respond)
 {
     UTaste->set_district(district_name);
-    respond = OK;
+    respond = OK_VIEW;
 }

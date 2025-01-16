@@ -1,6 +1,6 @@
 #include "output.hpp"
 
-output::output (const std::string respond)
+output::output (const std::string_view respond)
 {
     std::cout << respond;
 }

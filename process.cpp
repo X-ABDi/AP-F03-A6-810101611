@@ -4,21 +4,21 @@
 
 process::process(process &process_obj) 
 {
-    std::cout << "process constructor with argument" << std::endl;
+    // std::cout << "process constructor with argument" << std::endl;
     UTaste = process_obj.UTaste;
 }
 
 process::process() : UTaste(std::make_shared<software>())
 {
-    std::cout << "process constructor without argument" << std::endl;
+    // std::cout << "process constructor without argument" << std::endl;
     std::cout << UTaste->current_user->get_wallet() << std::endl;
 }
 
-std::vector<std::string> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
-std::vector<std::string> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES, sub_command_get::SHOW_BUDGET};
-std::vector<std::string> process::sub_comma_put = {sub_command_put::MY_DISTRICT};
-std::vector<std::string> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP, sub_command_post::INCREASE_BUDGET};
-std::vector<std::string> process::sub_comma_delete = {sub_command_delete::RESERVE};
+std::vector<std::string_view> process::main_commands = {main_command::GET, main_command::POST, main_command::PUT, main_command::DELETE};
+std::vector<std::string_view> process::sub_comma_get = {sub_command_get::DISTRICTS, sub_command_get::RESTAURANTS, sub_command_get::RESTAURANT_DETAIL, sub_command_get::RESERVES, sub_command_get::SHOW_BUDGET};
+std::vector<std::string_view> process::sub_comma_put = {sub_command_put::MY_DISTRICT};
+std::vector<std::string_view> process::sub_comma_post = {sub_command_post::LOGIN, sub_command_post::LOGOUT, sub_command_post::RESERVE, sub_command_post::SIGNUP, sub_command_post::INCREASE_BUDGET};
+std::vector<std::string_view> process::sub_comma_delete = {sub_command_delete::RESERVE};
 
 std::string process::pro_get (std::vector<std::string> &command_entered){}
 std::string process::pro_put (std::vector<std::string> &command_entered){}
@@ -27,10 +27,10 @@ std::string process::pro_delete (std::vector<std::string> &command_entered){}
 
 bool double_qoute_error (std::string input)
 {
-    if (input == "" || input[0] != '\"' || input[input.length()-1] != '\"')
+    if (input == EMPTY_STRING_VIEW || input[0] != DOUBLE_QUOTE || input[input.length()-1] != DOUBLE_QUOTE)
         return true;
     input = input.substr(1, input.length()-2);
-    if (input == "")
+    if (input == EMPTY_STRING_VIEW)
         return true;  
     return false;      
 }
@@ -136,7 +136,7 @@ void process::parse_sub_get(std::vector<std::string> &command_entered, std::stri
         throw errors(error_message::BAD_REQUEST);
     command_entered.push_back(input);
     ss >> input;
-    if (input != "?")
+    if (input != QUESTION_MARK_VIEW)
         throw errors(error_message::BAD_REQUEST);
     if (command_entered[1] == sub_command_get::RESTAURANTS)
         parse_get_resturants(command_entered, ss);
@@ -171,7 +171,7 @@ void process::parse_sub_put(std::vector<std::string> &command_entered, std::stri
         throw errors(error_message::BAD_REQUEST);
     command_entered.push_back(input);    
     ss >> input;
-    if (input != "?")
+    if (input != QUESTION_MARK_VIEW)
         throw errors(error_message::BAD_REQUEST);
     if (command_entered[1] == sub_command_put::MY_DISTRICT)
         parse_put_district(command_entered, ss);    
@@ -294,11 +294,11 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
     if (find(sub_comma_post.begin(), sub_comma_post.end(), input) == sub_comma_post.end())
         throw errors(error_message::BAD_REQUEST);    
     command_entered.push_back(input);  
-    std::cout << "pushed back sub command to vector: " << command_entered[1] << std::endl;  
+    // std::cout << "pushed back sub command to vector: " << command_entered[1] << std::endl;  
     ss >> input;  
-    if (input != "?")  
+    if (input != QUESTION_MARK_VIEW)  
         throw errors(error_message::BAD_REQUEST);
-    std::cout << "checking command vector[1]" <<std::endl;    
+    // std::cout << "checking command vector[1]" <<std::endl;    
     if (command_entered[1] == sub_command_post::LOGOUT)
         return;
     else if (command_entered[1] == sub_command_post::SIGNUP)
@@ -342,7 +342,7 @@ void process::parse_sub_delete(std::vector<std::string> &command_entered, std::s
         throw errors(error_message::BAD_REQUEST);
     command_entered.push_back(input);    
     ss >> input;
-    if (input != "?")
+    if (input != QUESTION_MARK_VIEW)
         throw errors(error_message::BAD_REQUEST);
     if (command_entered[1] == sub_command_delete::RESERVE)
         parse_delete_reserve(command_entered, ss);      

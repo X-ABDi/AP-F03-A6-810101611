@@ -2,22 +2,22 @@
 
 total_price_discount::total_price_discount()
 {
-    type = "";
-    minimum_total = 0;
-    value = 0;
+    type = EMPTY_STRING_VIEW;
+    minimum_total = ZERO;
+    value = ZERO;
 }
 
 first_order_discount::first_order_discount()
 {
-    type = "";
-    value = 0;
+    type = EMPTY_STRING_VIEW;
+    value = ZERO;
 }
 
 specific_food_discount::specific_food_discount()
 {
-    type = "";
-    food_name = "";
-    value = 0;
+    type = EMPTY_STRING_VIEW;
+    food_name = EMPTY_STRING_VIEW;
+    value = ZERO;
 }
 
 void total_price_discount::set_properties(std::string type_, std::string min, std::string value_)

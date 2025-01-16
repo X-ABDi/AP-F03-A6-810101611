@@ -6,9 +6,9 @@
 
 class errors : public std::exception
 {
-    std::string message;
+    std::string_view message;
     public:
-        errors(const std::string msg);
+        errors(const std::string_view msg);
         // virtual const char* what();
         void printError();
 };

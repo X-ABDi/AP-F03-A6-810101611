@@ -5,8 +5,8 @@ user::user(std::string username_, std::string password_)
     username = username_;
     password = password_;
     reserves = new std::map<std::string, user_reserve*>;
-    district = "";
-    wallet = 0;
+    district = EMPTY_STRING;
+    wallet = ZERO;
     logged_in = true;
 }
 

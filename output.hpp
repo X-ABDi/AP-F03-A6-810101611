@@ -5,10 +5,10 @@
 
 class output
 {
-    std::string respond;
+    std::string_view respond;
     public:
     output();
-    output(const std::string respond);
+    output(const std::string_view respond);
     void set_respond(std::string);
     void monitor();
 };

@@ -2,7 +2,7 @@
 
 Delete::Delete(process &process_obj) : process (process_obj)
 {
-    std::cout << "delete constructor" << std::endl;
+    // std::cout << "delete constructor" << std::endl;
 }
 
 std::string Delete::pro_delete (std::vector<std::string> &command_entered)
@@ -18,5 +18,5 @@ std::string Delete::pro_delete (std::vector<std::string> &command_entered)
 void Delete::pro_delete_reserve (std::vector<std::string> &command_entered, std::string &respond)
 {
     UTaste->delete_reserve(command_entered);
-    respond = OK;
+    respond = OK_VIEW;
 }

@@ -47,11 +47,11 @@ void resturan::set_total_dis(std::string total_dis_prop)
     std::stringstream ss = std::stringstream();
     ss << total_dis_prop;
     std::string type;
-    getline(ss, type, ';');
+    getline(ss, type, SEMI_COLON);
     std::string minimum;
-    getline(ss, minimum, ';');
+    getline(ss, minimum, SEMI_COLON);
     std::string value;
-    getline(ss, value, ';');
+    getline(ss, value, SEMI_COLON);
     total_dis.set_properties(type, minimum, value);
     // std::cout << "total discount success" << std::endl;
 }
@@ -66,10 +66,10 @@ void resturan::set_first_dis (std::string first_dis_prop)
     std::stringstream ss = std::stringstream();
     ss << first_dis_prop;
     std::string type;
-    getline(ss, type, ';');
+    getline(ss, type, SEMI_COLON);
     std::string value;
-    getline(ss, value, ';');
-    first_dis.set_properties(type, value, "");
+    getline(ss, value, SEMI_COLON);
+    first_dis.set_properties(type, value, EMPTY_STRING);
     // std::cout << "first discount success" << std::endl;
 }
 
@@ -111,8 +111,8 @@ void resturan::set_food_dis (std::string food_dis_prop)
     for (auto i : every_food)
     {
         ss << i;
-        getline(ss, type, ';');
-        getline(ss, food_name, ':');
+        getline(ss, type, SEMI_COLON);
+        getline(ss, food_name, COLON_CHAR);
         getline(ss, value);
         specific_food_discount* new_food_dis = new specific_food_discount;
         new_food_dis->set_properties(type, food_name, value);
@@ -123,25 +123,40 @@ void resturan::set_food_dis (std::string food_dis_prop)
 
 void resturan::get_discounts_detail(std::string &respond)
 {
-    if (total_dis.type != "")
+    if (total_dis.type != EMPTY_STRING_VIEW)
     {
-        respond += "Order Amount Discount: "+total_dis.type+", "+std::to_string(total_dis.minimum_total)+", "+std::to_string(total_dis.value)+"\n";
+        respond += output_get::RESTURAN_ORDER_DISCOUNT;
+        respond += total_dis.type;
+        respond += output_common::COMMA;
+        respond += std::to_string(total_dis.minimum_total);
+        respond += output_common::COMMA;
+        respond += std::to_string(total_dis.value);
+        respond += output_common::NEW_LINE;
     }
     if (food_discount == true)
     {
-        respond += "Item Specific Discount: ";
+        respond += output_get::RESTURAN_ITEM_DISCOUNT;
         for (auto i : menu)
         {
-            if (i.second.second->type != "")
+            if (i.second.second->type != EMPTY_STRING_VIEW)
             {
-                respond += i.first+"("+i.second.second->type+": "+std::to_string(i.second.second->value)+", ";
+                respond += i.first;
+                respond += output_common::PARANTHESE_OPEN;
+                respond += i.second.second->type;
+                respond += output_common::COLON;
+                respond += std::to_string(i.second.second->value);
+                respond += output_common::COMMA;
             }
         }
         respond = respond.substr(0, respond.length()-2);
-        respond += "\n";
+        respond += output_common::NEW_LINE;
     }
-    if (first_dis.type != "")
+    if (first_dis.type != EMPTY_STRING_VIEW)
     {
-        respond += "First Order Discount: "+first_dis.type+", "+std::to_string(first_dis.value)+"\n";
+        respond += output_get::RESTURAN_FIRST_DISCOUNT;
+        respond += first_dis.type;
+        respond += output_common::COMMA;
+        respond += std::to_string(first_dis.value);
+        respond += output_common::NEW_LINE;
     }
 }

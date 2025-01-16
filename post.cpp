@@ -2,19 +2,19 @@
 
 Post::Post(process &process_obj) : process(process_obj)
 {
-    std::cout << "post constructor" << std::endl;
+    // std::cout << "post constructor" << std::endl;
 }
 
 void Post::pro_post_signup(std::vector<std::string> &command_entered, std::string &respond)
 {
     UTaste->signup(command_entered);
-    respond = OK;
+    respond = OK_VIEW;
 }
 
 void Post::pro_post_login(std::vector<std::string> &command_entered, std::string &respond)
 {
     UTaste->login(command_entered);
-    respond = OK;
+    respond = OK_VIEW;
 }
 
 void Post::pro_post_logout(std::vector<std::string> &command_entered, std::string &respond)
@@ -23,7 +23,7 @@ void Post::pro_post_logout(std::vector<std::string> &command_entered, std::strin
     if (!UTaste->logged_in())
         throw errors(error_message::PERMISSION_DENIED);  
     UTaste->logout();
-    respond = OK;
+    respond = OK_VIEW;
 }
 
 void Post::pro_post_reserve(std::vector<std::string> &command_entered, std::string &respond)
