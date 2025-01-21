@@ -7,19 +7,22 @@ Post::Post(process &process_obj) : process(process_obj)
 
 void Post::pro_post_signup(std::vector<std::string> &command_entered, std::string &respond)
 {
+    if (command_entered[2] == EMPTY_STRING_VIEW || command_entered[3] == EMPTY_STRING_VIEW)
+        throw errors(error_message::BAD_REQUEST);
     UTaste->signup(command_entered);
     respond = OK_VIEW;
 }
 
 void Post::pro_post_login(std::vector<std::string> &command_entered, std::string &respond)
 {
+    if (command_entered[2] == EMPTY_STRING_VIEW || command_entered[3] == EMPTY_STRING_VIEW)
+        throw errors(error_message::BAD_REQUEST);
     UTaste->login(command_entered);
     respond = OK_VIEW;
 }
 
 void Post::pro_post_logout(std::vector<std::string> &command_entered, std::string &respond)
 {
-    std::cout << "in pro post logout" << std::endl;
     if (!UTaste->logged_in())
         throw errors(error_message::PERMISSION_DENIED);  
     UTaste->logout();
@@ -28,6 +31,9 @@ void Post::pro_post_logout(std::vector<std::string> &command_entered, std::strin
 
 void Post::pro_post_reserve(std::vector<std::string> &command_entered, std::string &respond)
 {
+    for (int i = 2; i<command_entered.size()-1; i++)
+        if (command_entered[i] == EMPTY_STRING_VIEW)
+            throw errors(error_message::BAD_REQUEST);
     if (!UTaste->logged_in())
         throw errors(error_message::PERMISSION_DENIED);
     UTaste->reserve(command_entered, respond);

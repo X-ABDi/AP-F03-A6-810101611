@@ -1,4 +1,5 @@
 #include "get.hpp"
+// #include "../APHTTP/utils/response.hpp"
 
 Get::Get(process &process_obj) : process(process_obj)
 {
@@ -25,22 +26,24 @@ std::string Get::pro_get (std::vector<std::string> &command_entered)
 
 void Get::pro_get_districts(std::vector<std::string> &command_entered, std::string &respond)
 {
-    if (command_entered.size() == 3)
+    if (command_entered[2] != EMPTY_STRING_VIEW)
         UTaste->get_district(command_entered[2], respond);
-    else if (command_entered.size() == 2)
+    else
         UTaste->get_all_districts(respond);    
 }
 
 void Get::pro_get_resturans(std::vector<std::string> &command_entered, std::string &respond)
 {
-    if (command_entered.size() == 3)
+    if (command_entered[2] != EMPTY_STRING_VIEW)
         UTaste->get_resturans(command_entered[2], respond); 
-    else if (command_entered.size() == 2)
+    else
         UTaste->get_resturans(EMPTY_STRING, respond);    
 }
 
 void Get::pro_get_restdetail(std::vector<std::string> &command_entered, std::string &respond)
 {
+    if (command_entered[2] == EMPTY_STRING_VIEW)
+        throw errors(error_message::BAD_REQUEST);
     UTaste->get_resturan_detail(command_entered[2], respond);
 }
 

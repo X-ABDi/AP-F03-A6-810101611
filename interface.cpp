@@ -6,43 +6,36 @@ interface::interface() : general_methods(), post_object(general_methods), get_ob
 
 }
 
-void interface::run ()
+std::string interface::run (std::vector<std::string> command_entered)
 {
     std::string respond;
-    std::vector<std::string> command_entered;
-    output result;
-    while(true)
+    // general_methods.begin(command_entered);
+    if (command_entered[0] == main_command::GET)
     {
-        general_methods.begin(command_entered);
-
-        if (command_entered[0] == main_command::GET)
-        {
-            respond = get_object.pro_get(command_entered);
-        }
-        else if (command_entered[0] == main_command::PUT)
-        {
-            respond = put_object.pro_put(command_entered);
-        }
-        else if (command_entered[0] == main_command::POST)
-        {
-            respond = post_object.pro_post(command_entered);
-        }
-        else if (command_entered[0] == main_command::DELETE)
-        {
-            respond = delete_object.pro_delete(command_entered);
-        }
-        result.set_respond(respond);
-        result.monitor();
-    }    
+        respond = get_object.pro_get(command_entered);
+    }
+    else if (command_entered[0] == main_command::PUT)
+    {
+        respond = put_object.pro_put(command_entered);
+    }
+    else if (command_entered[0] == main_command::POST)
+    {
+        respond = post_object.pro_post(command_entered);
+    }
+    else if (command_entered[0] == main_command::DELETE)
+    {
+        respond = delete_object.pro_delete(command_entered);
+    } 
+    return respond;    
 }
 
 void interface::initi (char *argv[])
 {
     try{
-    district_init(argv[2]);
-    restaurant_init(argv[1]);
-    discount_init(argv[3]);
-    run();
+    district_init(argv[3]);
+    restaurant_init(argv[2]);
+    discount_init(argv[4]);
+    // run();
     }
     catch (errors &e)
     {

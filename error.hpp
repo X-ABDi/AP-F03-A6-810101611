@@ -6,11 +6,10 @@
 
 class errors : public std::exception
 {
-    std::string_view message;
     public:
         errors(const std::string_view msg);
-        // virtual const char* what();
         void printError();
+        std::string_view message;
 };
 
 #endif

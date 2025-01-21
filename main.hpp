@@ -3,5 +3,7 @@
 
 #include "global.hpp"
 #include "interface.hpp"
+#include "APHTTP/server/server.hpp"
+#include "APHTTP/server/handlers.hpp"
 
 #endif

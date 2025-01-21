@@ -294,11 +294,9 @@ void process::parse_sub_post(std::vector<std::string> &command_entered, std::str
     if (find(sub_comma_post.begin(), sub_comma_post.end(), input) == sub_comma_post.end())
         throw errors(error_message::BAD_REQUEST);    
     command_entered.push_back(input);  
-    // std::cout << "pushed back sub command to vector: " << command_entered[1] << std::endl;  
     ss >> input;  
     if (input != QUESTION_MARK_VIEW)  
         throw errors(error_message::BAD_REQUEST);
-    // std::cout << "checking command vector[1]" <<std::endl;    
     if (command_entered[1] == sub_command_post::LOGOUT)
         return;
     else if (command_entered[1] == sub_command_post::SIGNUP)

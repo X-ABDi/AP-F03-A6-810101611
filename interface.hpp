@@ -20,7 +20,7 @@ class interface
     public:
         interface();
         void initi (char *argv[]);
-        void run ();
+        std::string run (std::vector<std::string> command_entered);
         void restaurant_init(char *resturan_file);
         void district_init(char *restrict_file);
         void discount_init(char *discount_file);

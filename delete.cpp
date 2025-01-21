@@ -17,6 +17,10 @@ std::string Delete::pro_delete (std::vector<std::string> &command_entered)
 
 void Delete::pro_delete_reserve (std::vector<std::string> &command_entered, std::string &respond)
 {
+    for (auto i = command_entered.begin()+2; i != command_entered.end(); i++) {
+        if (*i == "")
+            throw errors(error_message::BAD_REQUEST);
+    }
     UTaste->delete_reserve(command_entered);
     respond = OK_VIEW;
 }

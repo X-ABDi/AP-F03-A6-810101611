@@ -53,6 +53,8 @@ void software::discount_init (std::vector<std::string> &disc_prop)
 
 void software::set_district (std::string district_name)
 {
+    if (district_name == EMPTY_STRING_VIEW)
+    throw errors(error_message::BAD_REQUEST);
     if (!districts.user_district_check(district_name))
         throw errors(error_message::NOT_FOUND);
     current_user->district = district_name;
@@ -270,11 +272,15 @@ void software::get_reserves(std::vector<std::string> &command_entered, std::stri
 {
     if ((*current_user->reserves).empty())
         throw errors(error_message::EMPTY);
-    if (command_entered.size() == 2)
-        get_all_reserves(respond);
-    if (command_entered.size() == 3)
+    if (command_entered[2] == EMPTY_STRING_VIEW)
+    {
+        if (command_entered[3] != EMPTY_STRING_VIEW)
+            throw errors(error_message::BAD_REQUEST);
+        get_all_reserves(respond);    
+    }
+    else if (command_entered[3] == EMPTY_STRING_VIEW)
         get_resturan_reserves(command_entered, respond); 
-    if (command_entered.size() == 4)
+    else
         get_resturan_one_reserve(command_entered, respond);          
 }
 
